@@ -1,3 +1,4 @@
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core"  %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
