@@ -18,18 +18,21 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.apache.tomcat.embed:tomcat-embed-jasper'
-    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
-    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
-    implementation 'jakarta.el:jakarta.el-api'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
+    dependencies {
+        implementation 'org.apache.tomcat.embed:tomcat-embed-jasper' // JSP and EL runtime support
+        implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api' // JSTL API
+        implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'           // JSTL implementation
+        implementation 'jakarta.el:jakarta.el-api'                           // EL API
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
 
-tasks.named('test') {
-    useJUnitPlatform()
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }
