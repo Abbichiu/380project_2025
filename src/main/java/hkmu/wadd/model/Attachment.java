@@ -1,22 +1,57 @@
 package hkmu.wadd.model;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.util.UUID;
+
+@Entity
 public class Attachment {
-    public String getId() {
+    @Id
+    @GeneratedValue
+    @ColumnDefault("random_uuid()")
+    private UUID id;
+
+    @Column(name = "filename")
+    private String name;
+
+    @Column(name = "content_type")
+    private String mimeContentType;
+
+    @Column(name = "content")
+    @Basic(fetch = FetchType.LAZY)
+    @Lob
+    private byte[] contents;
+
+    @Column(name = "ticket_id", insertable=false, updatable=false)
+    private long ticketId;
+
+    @ManyToOne
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
-
-    private String id;
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getMimeContentType() {
         return mimeContentType;
+    }
+
+    public void setMimeContentType(String mimeContentType) {
+        this.mimeContentType = mimeContentType;
     }
 
     public byte[] getContents() {
@@ -27,16 +62,19 @@ public class Attachment {
         this.contents = contents;
     }
 
-    public void setMimeContentType(String mimeContentType) {
-        this.mimeContentType = mimeContentType;
+    public long getTicketId() {
+        return ticketId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTicketId(long ticketId) {
+        this.ticketId = ticketId;
     }
 
-    private String name;
-    private String mimeContentType;
-    private byte[] contents;
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
 }
-

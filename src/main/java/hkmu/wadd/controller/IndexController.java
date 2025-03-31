@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -58,12 +57,14 @@ public class IndexController {
         try {
             now.setIpAddress(InetAddress.getByName(request.getRemoteAddr()));
 
-        } catch (UnknownHostException e) {
+        } catch (java.net.UnknownHostException e) {
             throw new RuntimeException(e);
         }
         visits.add(now);
         return "viewSessionActivity";
     }
+
+
     @GetMapping("/shop")
     public String shop(HttpServletRequest request, HttpSession session) {
         String action = request.getParameter("action");
