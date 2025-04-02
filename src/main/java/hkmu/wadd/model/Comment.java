@@ -3,7 +3,7 @@ package hkmu.wadd.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "lecture")
+@Table(name = "comment")
 public class Comment {
 
     @Id
@@ -14,15 +14,15 @@ public class Comment {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "lecture_id", nullable = true)
     private Lecture lecture; // Comment on a lecture (optional)
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "poll_id", nullable = true)
     private Poll poll; // Comment on a poll (optional)
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType. EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // User who made the comment
 

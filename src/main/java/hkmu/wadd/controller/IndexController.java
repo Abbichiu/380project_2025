@@ -1,16 +1,19 @@
 package hkmu.wadd.controller;
 
+import hkmu.wadd.model.Comment;
 import hkmu.wadd.model.Course;
 import hkmu.wadd.model.Lecture;
 import hkmu.wadd.model.Poll;
+import hkmu.wadd.service.CommentService;
 import hkmu.wadd.service.CourseService;
 import hkmu.wadd.service.LectureService;
 import hkmu.wadd.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -25,6 +28,9 @@ public class IndexController {
 
     @Autowired
     private PollService pollService;
+
+    @Autowired
+    private CommentService commentService;
 
 
     @GetMapping("/")
@@ -43,5 +49,22 @@ public class IndexController {
 
         // Return the JSP view name
         return "index"; // Resolves to /WEB-INF/jsp/index.jsp
+    }
+    @GetMapping("/lecture/{lectureId}")
+    @Transactional
+    public String getLectureCourseMaterial(@PathVariable Long lectureId, Model model) {
+        Lecture lecture = lectureService.getLectureById(lectureId);
+        if (lecture == null) {
+            throw new RuntimeException("Lecture not found with ID: " + lectureId);
+        }
+        System.out.println("Lecture: " + lecture);
+
+        List<Comment> comments = commentService.getCommentsByLectureId(lectureId);
+        System.out.println("Comments: " + comments);
+
+        model.addAttribute("lecture", lecture);
+        model.addAttribute("comments", comments);
+
+        return "course-material";
     }
 }

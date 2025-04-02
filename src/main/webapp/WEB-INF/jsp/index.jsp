@@ -55,7 +55,7 @@
   <ul>
     <c:forEach var="lecture" items="${lectures}">
       <li>
-        <a href="/lecture/${lecture.id}">${lecture.title}</a>
+        <a href="<c:url value='/lecture/${lecture.id}' />">${lecture.title}</a>
       </li>
     </c:forEach>
   </ul>

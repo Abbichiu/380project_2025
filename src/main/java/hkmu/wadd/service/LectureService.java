@@ -2,6 +2,7 @@ package hkmu.wadd.service;
 
 import hkmu.wadd.dao.LectureRepository;
 import hkmu.wadd.model.Lecture;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,12 @@ public class LectureService {
     }
 
     // Get a lecture by ID
-    public Lecture getLectureById(Long id) {
-        return lectureRepository.findById(id).orElse(null);
+    public Lecture getLectureById(Long lectureId) {
+        Lecture lecture = lectureRepository.findById(lectureId).orElse(null);
+        if (lecture != null) {
+            Hibernate.initialize(lecture.getNoteLinks()); // Manually initialize noteLinks
+        }
+        return lecture;
     }
 
     // Get all lectures for a specific course
