@@ -2,6 +2,8 @@ package hkmu.wadd.service;
 
 import hkmu.wadd.dao.PollRepository;
 import hkmu.wadd.model.Poll;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +21,17 @@ public class PollService {
     }
 
     // Get a poll by ID
+    @Transactional
     public Poll getPollById(Long id) {
-        return pollRepository.findById(id).orElse(null);
+        Poll poll = pollRepository.findById(id).orElse(null);
+        if (poll != null) {
+            // Explicitly initialize lazy-loaded collections
+            Hibernate.initialize(poll.getVotes());
+            Hibernate.initialize(poll.getComments());
+        }
+        return poll;
     }
+
 
     // Get a poll by its question
     public Poll getPollByQuestion(String question) {

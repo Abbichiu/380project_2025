@@ -27,13 +27,6 @@
     .section {
       margin-bottom: 30px;
     }
-    .poll-form {
-      margin-left: 20px;
-      font-size: 0.9em;
-    }
-    .poll-submit-btn {
-      margin-top: 10px;
-    }
   </style>
 </head>
 <body>
@@ -67,23 +60,8 @@
   <ul>
     <c:forEach var="poll" items="${polls}">
       <li>
-        <!-- Poll question -->
-        <span>${poll.question}</span>
-
-        <!-- Poll selection form -->
-        <form class="poll-form" action="/poll/vote" method="post">
-          <input type="hidden" name="pollId" value="${poll.id}" />
-          <!-- Display options as checkboxes -->
-          <c:forEach var="option" items="${poll.options}">
-            <div>
-              <label>
-                <input type="checkbox" name="selectedOptions" value="${option}" />
-                  ${option}
-              </label>
-            </div>
-          </c:forEach>
-          <button type="submit" class="poll-submit-btn">Submit</button>
-        </form>
+        <!-- Link to the poll using poll_id -->
+        <a href="<c:url value='/poll/${poll.id}' />">${poll.question}</a>
       </li>
     </c:forEach>
   </ul>

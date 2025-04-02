@@ -14,7 +14,7 @@ public class Poll {
     @Column(name = "question", nullable = false)
     private String question;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "poll_options", joinColumns = @JoinColumn(name = "poll_id"))
     @Column(name = "option_text")
     private List<String> options; // List of poll options

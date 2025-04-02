@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS comment (
                                        user_id UUID NOT NULL,
                                        FOREIGN KEY (lecture_id) REFERENCES lecture(id) ON DELETE CASCADE,
                                        FOREIGN KEY (poll_id) REFERENCES poll(id) ON DELETE CASCADE,
-                                       FOREIGN KEY (user_id) REFERENCES "users"(id) ON DELETE CASCADE
+                                       FOREIGN KEY (user_id) REFERENCES "USERS"(id) ON DELETE CASCADE
 );
 
 -- 9. Create the Vote table
@@ -73,5 +73,5 @@ CREATE TABLE IF NOT EXISTS vote (
                                     user_id UUID NOT NULL,
                                     selected_option INT NOT NULL,
                                     FOREIGN KEY (poll_id) REFERENCES poll(id) ON DELETE CASCADE,
-                                    FOREIGN KEY (user_id) REFERENCES "users"(id) ON DELETE CASCADE
+                                    FOREIGN KEY (user_id) REFERENCES "USERS"(id) ON DELETE CASCADE
 );
