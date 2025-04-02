@@ -22,11 +22,17 @@ public class IndexController {
         this.products.put(5, "Tape");
     }
 
+
     @GetMapping("/")
     public String index() {
         return "redirect:/ticket/list";
     }
 
+    @GetMapping("/login")
+    public String login() {
+
+        return "login";
+    }
     @GetMapping("/checkboxes")
     public String multiValueForm() {
         return "MultiValueForm";

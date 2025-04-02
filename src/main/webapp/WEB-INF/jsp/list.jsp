@@ -4,6 +4,11 @@
   <title>Customer Support</title>
 </head>
 <body>
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post">
+  <input type="submit" value="Log out" />
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
 <h2>Tickets</h2>
 <a href="<c:url value="/ticket/create" />">Create a Ticket</a><br/><br/>
 <c:choose>
@@ -15,8 +20,15 @@
       Ticket ${entry.id}:
       <a href="<c:url value="/ticket/view/${entry.id}" />">
         <c:out value="${entry.subject}"/></a>
-      (customer: <c:out value="${entry.customerName}"/>)<br />
-      [<a href="<c:url value="/ticket/delete/${entry.id}" />">Delete</a>]<br />
+      (customer: <c:out value="${entry.customerName}"/>)
+      <security:authorize access="hasRole('ADMIN') or
+principal.username=='${entry.customerName}'">
+        [<a href="<c:url value="/ticket/edit/${entry.id}" />">Edit</a>]
+      </security:authorize>
+      <security:authorize access="hasRole('ADMIN')">
+        [<a href="<c:url value="/ticket/delete/${entry.id}" />">Delete</a>]
+      </security:authorize>
+      <br /><br />
     </c:forEach>
   </c:otherwise>
 </c:choose>
