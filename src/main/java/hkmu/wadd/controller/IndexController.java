@@ -50,6 +50,12 @@ public class IndexController {
         // Return the JSP view name
         return "index"; // Resolves to /WEB-INF/jsp/index.jsp
     }
+    @GetMapping("/login")
+    public String login() {
+
+        return "login";
+    }
+
     @GetMapping("/lecture/{lectureId}")
     @Transactional
     public String getLectureCourseMaterial(@PathVariable Long lectureId, Model model) {

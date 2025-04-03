@@ -1,9 +1,12 @@
 -- Insert Users (with UUIDs)
-INSERT INTO "USERS" (id, username, email, password, role) VALUES
-                                                              ('11111111-1111-1111-1111-111111111111', 'student1', 'student1@example.com', 'password123', 'STUDENT'),
-                                                              ('22222222-2222-2222-2222-222222222222', 'student2', 'student2@example.com', 'password123', 'STUDENT'),
-                                                              ('33333333-3333-3333-3333-333333333333', 'teacher1', 'teacher1@example.com', 'password123', 'TEACHER'),
-                                                              ('44444444-4444-4444-4444-444444444444', 'admin1', 'admin1@example.com', 'password123', 'ADMIN');
+INSERT INTO users (id, username, email, password ) VALUES
+                                                              ('11111111-1111-1111-1111-111111111111', 'keith', 'keith@example.com', '{noop}keithpw'),
+                                                              ('22222222-2222-2222-2222-222222222222', 'mary', 'mary@example.com', '{noop}marypw'),
+                                                              ('33333333-3333-3333-3333-333333333333', 'john', 'john@example.com', '{noop}johnpw');
+INSERT INTO user_roles(username, role) VALUES ('keith', 'ROLE_USER');
+INSERT INTO user_roles(username, role) VALUES ('keith', 'ROLE_ADMIN');
+INSERT INTO user_roles(username, role) VALUES ('john', 'ROLE_ADMIN');
+INSERT INTO user_roles(username, role) VALUES ('mary', 'ROLE_USER');
 
 -- Insert Courses
 DELETE FROM course WHERE id IN (1, 2);

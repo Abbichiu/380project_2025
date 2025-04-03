@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS poll;
 DROP TABLE IF EXISTS lecture_notes;
 DROP TABLE IF EXISTS lecture;
 DROP TABLE IF EXISTS course;
-DROP TABLE IF EXISTS "USERS";
-
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS users;
 -- 2. Create the Course table
 CREATE TABLE IF NOT EXISTS course (
                                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -32,12 +32,19 @@ CREATE TABLE IF NOT EXISTS lecture_notes (
 );
 
 -- 5. Create the User table
-CREATE TABLE IF NOT EXISTS "USERS" (
-                                      id UUID PRIMARY KEY,
-                                      username VARCHAR(255) NOT NULL UNIQUE,
-                                      email VARCHAR(255) NOT NULL UNIQUE,
-                                      password VARCHAR(255) NOT NULL,
-                                      role VARCHAR(50) NOT NULL
+CREATE TABLE IF NOT EXISTS users (
+                                       id UUID PRIMARY KEY,
+                                       username VARCHAR(255) NOT NULL UNIQUE,
+                                       email VARCHAR(255) NOT NULL UNIQUE,
+                                       password VARCHAR(255) NOT NULL
+
+);
+CREATE TABLE IF NOT EXISTS user_roles (
+                                          user_role_id INTEGER GENERATED ALWAYS AS IDENTITY,
+                                          username VARCHAR(50) NOT NULL,
+                                          role VARCHAR(50) NOT NULL,
+                                          PRIMARY KEY (user_role_id),
+                                          FOREIGN KEY (username) REFERENCES users(username)
 );
 
 -- 6. Create the Poll table

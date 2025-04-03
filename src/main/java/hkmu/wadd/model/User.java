@@ -3,12 +3,16 @@ package hkmu.wadd.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User {
+    public User() {
+
+    }
 
     @Id
     @GeneratedValue
@@ -24,8 +28,9 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "role", nullable = false)
-    private String role; // e.g., "TEACHER" or "STUDENT"
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRole> roles = new ArrayList<>(); // e.g., "TEACHER" or "STUDENT"
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments; // A user can write multiple comments
@@ -33,6 +38,13 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes; // A user can vote on multiple polls
 
+    public User(String username, String password, String[] roles) {
+        this.username = username;
+        this.password = "{noop}" + password;
+        for (String role : roles) {
+            this.roles.add(new UserRole(this, role));
+        }
+    }
     // Getters and setters
     public UUID getId() {
         return id;
@@ -66,14 +78,13 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public List<UserRole> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(List<UserRole> roles) {
+        this.roles = roles;
     }
-
     public List<Comment> getComments() {
         return comments;
     }
