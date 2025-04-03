@@ -8,11 +8,11 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
+
 public class SecurityConfig {
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         // Allows the use of plain text passwords with `{noop}`
@@ -20,8 +20,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)
-            throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/user/**").hasRole("ADMIN")
@@ -30,22 +29,21 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .failureUrl("/login?error")
+                        .loginPage("/login") // Custom login page
+                        .defaultSuccessUrl("/Lab10/index", true) // Ensure success URL includes the context path
+                        .failureUrl("/login?error") // Redirect to /login?error on login failure
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutUrl("/logout") // Custom logout URL
+                        .logoutSuccessUrl("/login?logout") // Redirect to /login?logout after logout
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )
                 .rememberMe(remember -> remember
-                        .key("uniqueAndSecret")
-                        .tokenValiditySeconds(86400)
-                )
-                .httpBasic(withDefaults());
+                        .key("uniqueAndSecret") // Key for remember-me functionality
+                        .tokenValiditySeconds(86400) // Token validity (1 day)
+                );
         return http.build();
     }
-
 }

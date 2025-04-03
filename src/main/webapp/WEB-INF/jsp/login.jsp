@@ -12,7 +12,7 @@
 </c:if>
 
 <h2>Customer Support Login</h2>
-<form action="/login" method="POST">
+<form action="login" method="POST">
   <label for="username">Username:</label><br/>
   <input type="text" id="username" name="username"/><br/><br/>
   <label for="password">Password:</label><br/>

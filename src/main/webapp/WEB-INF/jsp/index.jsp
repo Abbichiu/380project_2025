@@ -1,3 +1,6 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,10 +30,33 @@
     .section {
       margin-bottom: 30px;
     }
+    .welcome {
+      margin-bottom: 20px;
+      font-size: 1.2em;
+      color: #555;
+    }
   </style>
 </head>
 <body>
 <h1>Welcome to the Portal</h1>
+
+<!-- Display Login or Welcome Message -->
+<div class="welcome">
+  <!-- If the user is not authenticated -->
+  <security:authorize access="isAnonymous()">
+    <p>Please <a href="<c:url value='/login' />">login</a> with your account.</p>
+  </security:authorize>
+
+  <!-- If the user is authenticated -->
+  <security:authorize access="isAuthenticated()">
+    <p>Welcome, <security:authentication property="name" />!</p>
+    <!-- Logout button -->
+    <form action="<c:url value='/logout' />" method="POST">
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+      <button type="submit">Logout</button>
+    </form>
+  </security:authorize>
+</div>
 
 <!-- Display Courses -->
 <div class="section">
@@ -60,7 +86,6 @@
   <ul>
     <c:forEach var="poll" items="${polls}">
       <li>
-        <!-- Link to the poll using poll_id -->
         <a href="<c:url value='/poll/${poll.id}' />">${poll.question}</a>
       </li>
     </c:forEach>
