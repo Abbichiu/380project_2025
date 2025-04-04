@@ -3,6 +3,7 @@ package hkmu.wadd.service;
 
 import hkmu.wadd.dao.CommentRepository;
 import hkmu.wadd.dao.LectureRepository;
+import hkmu.wadd.dao.UserRepository;
 import hkmu.wadd.model.Comment;
 import hkmu.wadd.model.Lecture;
 import hkmu.wadd.model.User;
@@ -15,6 +16,8 @@ import java.util.List;
 
 @Service
 public class CommentService {
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private CommentRepository commentRepository;
@@ -30,12 +33,18 @@ public class CommentService {
     // Add a new comment to a lecture
     @Transactional
     public void addComment(Long lectureId, String content, Authentication authentication) {
-// Fetch the lecture
+        // Fetch the lecture
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new RuntimeException("Lecture not found with ID: " + lectureId));
 
-        // Get the currently authenticated user
-        User user = (User) authentication.getPrincipal(); // Assuming your User class is used for authentication
+        // Get the authenticated user's username
+        org.springframework.security.core.userdetails.User authenticatedUser =
+                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        String username = authenticatedUser.getUsername();
+
+        // Fetch your custom User entity from the database
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
 
         // Create a new comment
         Comment comment = new Comment();

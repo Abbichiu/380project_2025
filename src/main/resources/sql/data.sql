@@ -50,13 +50,13 @@ INSERT INTO vote (id, poll_id, user_id, selected_option) VALUES
                                                              (2, 1, '22222222-2222-2222-2222-222222222222', 4); -- Student 2 votes for Option 4
 
 -- Insert Comments on Lectures
-INSERT INTO comment (id, content, lecture_id, poll_id, user_id) VALUES
-                                                                    (1, 'This lecture was very informative!', 1, NULL, '11111111-1111-1111-1111-111111111111'), -- Student 1 comments on Lecture 1
-                                                                    (2, 'I hope everyone has understood the basics.', 1, NULL, '33333333-3333-3333-3333-333333333333'), -- Teacher 1 comments on Lecture 1
-                                                                    (3, 'Can you provide more examples of data structures?', 2, NULL, '22222222-2222-2222-2222-222222222222'); -- Student 2 comments on Lecture 2
+INSERT INTO comment ( content, lecture_id, poll_id, user_id) VALUES
+                                                                    ( 'This lecture was very informative!', 1, NULL, '11111111-1111-1111-1111-111111111111'), -- Student 1 comments on Lecture 1
+                                                                    ( 'I hope everyone has understood the basics.', 1, NULL, '33333333-3333-3333-3333-333333333333'), -- Teacher 1 comments on Lecture 1
+                                                                    ('Can you provide more examples of data structures?', 2, NULL, '22222222-2222-2222-2222-222222222222'); -- Student 2 comments on Lecture 2
 
 -- Insert Comments on Polls
-INSERT INTO comment (id, content, lecture_id, poll_id, user_id) VALUES
-                                                                    (4, 'March 3 works best for me!', NULL, 1, '11111111-1111-1111-1111-111111111111'), -- Student 1 comments on Poll 1
+INSERT INTO comment (content, lecture_id, poll_id, user_id) VALUES
+                                                                    ( 'March 3 works best for me!', NULL, 1, '11111111-1111-1111-1111-111111111111'), -- Student 1 comments on Poll 1
 
-                                                              (5, 'March 1 is the most suitable for the mid-term.', NULL, 1, '33333333-3333-3333-3333-333333333333');
+                                                              ( 'March 1 is the most suitable for the mid-term.', NULL, 1, '33333333-3333-3333-3333-333333333333');
