@@ -72,7 +72,8 @@
 <!-- Section: Upload Files -->
 <div class="section">
   <h2>Upload Lecture Notes</h2>
-  <form action="/teacher/lecture/${lecture.id}/upload" method="post" enctype="multipart/form-data">
+  <form action="${pageContext.request.contextPath}/teacher/lecture/${lecture.id}/upload" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="${_csrf.token}" />
     <input type="file" name="file" required>
     <button type="submit">Upload</button>
   </form>
@@ -85,7 +86,8 @@
     <c:forEach var="noteUrl" items="${lecture.noteLinks}">
       <li>
         <a href="${noteUrl}" target="_blank">Download</a>
-        <form action="/teacher/lecture/${lecture.id}/file" method="post" style="display:inline;">
+        <form action="${pageContext.request.contextPath}/teacher/lecture/${lecture.id}/file" method="post" style="display:inline;">
+          <input type="hidden" name="_csrf" value="${_csrf.token}" />
           <input type="hidden" name="_method" value="delete">
           <input type="hidden" name="fileUrl" value="${noteUrl}">
           <button type="submit" class="delete-button">Delete</button>
@@ -104,7 +106,8 @@
     <c:forEach var="comment" items="${comments}">
       <li class="comment">
         <strong>${comment.user.username}:</strong> ${comment.content}
-        <form action="/teacher/lecture/${lecture.id}/comment/${comment.id}" method="post" style="display:inline;">
+        <form action="${pageContext.request.contextPath}/teacher/lecture/${lecture.id}/comment/${comment.id}" method="post" style="display:inline;">
+          <input type="hidden" name="_csrf" value="${_csrf.token}" />
           <input type="hidden" name="_method" value="delete">
           <button type="submit" class="delete-button">Delete</button>
         </form>
@@ -125,6 +128,7 @@
   </security:authorize>
   <security:authorize access="!hasRole('ROLE_TEACHER')">
     <form class="comment-form" action="${pageContext.request.contextPath}/lecture/${lecture.id}/comment" method="post">
+      <input type="hidden" name="_csrf" value="${_csrf.token}" />
       <textarea name="content" placeholder="Write your comment here..." required></textarea>
       <button type="submit">Post Comment</button>
     </form>

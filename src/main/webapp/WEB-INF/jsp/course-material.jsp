@@ -87,6 +87,7 @@
   <!-- Add a New Comment -->
   <h3>Add a Comment</h3>
   <form class="comment-form" action="${pageContext.request.contextPath}/lecture/${lecture.id}/comment" method="post">
+    <input type="hidden" name="_csrf" value="${_csrf.token}" />
     <textarea name="content" placeholder="Write your comment here..." required></textarea>
     <button type="submit">Post Comment</button>
   </form>
