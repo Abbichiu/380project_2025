@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -15,24 +16,46 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            System.out.println("Authentication success! User roles: " + authentication.getAuthorities());
+
+            // Dynamically include the context path
+            String contextPath = request.getContextPath();
+            response.sendRedirect(contextPath + "/index"); // Redirect to context-aware index page
+        };
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         // Allows the use of plain text passwords with `{noop}`
         return NoOpPasswordEncoder.getInstance();
     }
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
+                        // Restrict access to /teacher/** to users with ROLE_TEACHER
+                        .requestMatchers("/teacher/**").hasRole("TEACHER")
+
+                        // Allow access to /lecture/** to everyone (students and teachers)
+                        .requestMatchers("/lecture/**").permitAll()
+
+                        // Existing configurations for /user/** and /ticket/** URLs
                         .requestMatchers("/user/**").hasRole("ADMIN")
                         .requestMatchers("/ticket/delete/**").hasRole("ADMIN")
                         .requestMatchers("/ticket/**").hasAnyRole("USER", "ADMIN")
+
+                        // Allow all other requests
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Custom login page
-                        .defaultSuccessUrl("/index", true) // Redirect to /index after login
-                        .failureUrl("/login?error") // Redirect to /login?error on login failure
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/index", true)
+                        .failureUrl("/login?error")
+                        .successHandler(authenticationSuccessHandler()) // Add success handler
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -45,7 +68,8 @@ public class SecurityConfig {
                         .key("uniqueAndSecret") // Key to secure the remember-me tokens
                         .tokenValiditySeconds(86400) // Validity period for the token (1 day)
                         .rememberMeParameter("remember-me") // The parameter name from the login form
-                ).httpBasic(withDefaults());;
+                )
+                .httpBasic(withDefaults());
         return http.build();
     }
 }

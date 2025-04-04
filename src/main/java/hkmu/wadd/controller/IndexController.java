@@ -1,6 +1,5 @@
 package hkmu.wadd.controller;
 
-import hkmu.wadd.model.Comment;
 import hkmu.wadd.model.Course;
 import hkmu.wadd.model.Lecture;
 import hkmu.wadd.model.Poll;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -77,20 +75,5 @@ public class IndexController {
 
         return "login";
     }
-    // Fetch lecture by ID
-    @GetMapping("/lecture/{lectureId}")
-    @Transactional
-    public String getLectureCourseMaterial(@PathVariable Long lectureId, Model model) {
-        Lecture lecture = lectureService.getLectureById(lectureId);
-        if (lecture == null) {
-            throw new RuntimeException("Lecture not found with ID: " + lectureId);
-        }
 
-        List<Comment> comments = commentService.getCommentsByLectureId(lectureId);
-
-        model.addAttribute("lecture", lecture);
-        model.addAttribute("comments", comments);
-
-        return "course-material"; // Resolves to /WEB-INF/jsp/course-material.jsp
-    }
 }

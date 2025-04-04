@@ -9,9 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 import java.util.Collections;
-
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @SpringBootApplication
 public class Lab10Application {
 

@@ -58,7 +58,15 @@
   <ul>
     <c:forEach var="lecture" items="${lectures}">
       <li>
-        <a href="<c:url value='/lecture/${lecture.id}' />">${lecture.title}</a>
+        <!-- If the user has the ROLE_TEACHER role, show the teacher version -->
+        <security:authorize access="hasRole('ROLE_TEACHER')">
+          <a href="<c:url value='/teacher/lecture/${lecture.id}' />">${lecture.title}</a>
+        </security:authorize>
+        <!-- If the user does NOT have the ROLE_TEACHER role, show the student version -->
+        <security:authorize access="!hasRole('ROLE_TEACHER')">
+          <a href="<c:url value='/lecture/${lecture.id}' />">${lecture.title}</a>
+        </security:authorize>
+
       </li>
     </c:forEach>
   </ul>

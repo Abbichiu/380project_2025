@@ -34,6 +34,26 @@
       border-radius: 5px;
       margin-bottom: 10px;
     }
+    .comment-form textarea {
+      width: 100%;
+      height: 80px;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .comment-form button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .comment-form button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -54,6 +74,8 @@
 <!-- Section: Comments -->
 <div class="section">
   <h2>Comments</h2>
+
+  <!-- Display Existing Comments -->
   <ul>
     <c:forEach var="comment" items="${comments}">
       <li class="comment">
@@ -61,6 +83,13 @@
       </li>
     </c:forEach>
   </ul>
+
+  <!-- Add a New Comment -->
+  <h3>Add a Comment</h3>
+  <form class="comment-form" action="${pageContext.request.contextPath}/lecture/${lecture.id}/comment" method="post">
+    <textarea name="content" placeholder="Write your comment here..." required></textarea>
+    <button type="submit">Post Comment</button>
+  </form>
 </div>
 </body>
 </html>

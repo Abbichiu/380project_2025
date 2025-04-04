@@ -1,7 +1,4 @@
 package hkmu.wadd.dao;
-
-
-
 import hkmu.wadd.model.User;
 import hkmu.wadd.model.UserRole;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,11 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 public class CustomUserService implements UserDetailsService {
 
@@ -39,7 +34,12 @@ public class CustomUserService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (user.getRoles() != null) {
             for (UserRole role : user.getRoles()) {
-                authorities.add(new SimpleGrantedAuthority(role.getRole()));
+                // Ensure roles are prefixed with "ROLE_"
+                String roleName = role.getRole();
+                if (!roleName.startsWith("ROLE_")) {
+                    roleName = "ROLE_" + roleName;
+                }
+                authorities.add(new SimpleGrantedAuthority(roleName));
             }
         }
 
@@ -53,5 +53,5 @@ public class CustomUserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), password, authorities);
     }
 
-    }
+}
 

@@ -2,15 +2,22 @@ package hkmu.wadd.service;
 
 import hkmu.wadd.dao.LectureRepository;
 import hkmu.wadd.model.Lecture;
+
+import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
 public class LectureService {
 
+    private static final String UPLOAD_DIR = "uploads/lecture-materials"; // Directory to store uploaded files
     @Autowired
     private LectureRepository lectureRepository;
 
@@ -20,11 +27,6 @@ public class LectureService {
     }
 
 
-    // Create or update a lecture
-    public Lecture saveLecture(Lecture lecture) {
-        return lectureRepository.save(lecture);
-    }
-
     // Get a lecture by ID
     public Lecture getLectureById(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId).orElse(null);
@@ -33,40 +35,67 @@ public class LectureService {
         }
         return lecture;
     }
+    // Upload file and add its link to lecture materials
+    @Transactional
+    public void uploadLectureMaterial(Long lectureId, MultipartFile file) {
+        try {
+            // Fetch the lecture
+            Lecture lecture = getLectureById(lectureId);
+            if (lecture == null) {
+                throw new RuntimeException("Lecture not found with ID: " + lectureId);
+            }
 
-    // Get all lectures for a specific course
-    public List<Lecture> getLecturesByCourseId(Long courseId) {
-        return lectureRepository.findByCourseId(courseId);
+            // Save the file to the local filesystem
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath); // Create the directory if it doesn't exist
+            }
+
+            String fileName = file.getOriginalFilename();
+            Path filePath = uploadPath.resolve(fileName);
+            Files.write(filePath, file.getBytes());
+
+            // Generate the file URL (assuming the files are served from "/uploads/")
+            String fileUrl = "/uploads/lecture-materials/" + fileName;
+
+            // Add the file URL to the lecture's noteLinks
+            List<String> noteLinks = lecture.getNoteLinks();
+            noteLinks.add(fileUrl);
+            lecture.setNoteLinks(noteLinks);
+
+            // Save the updated lecture
+            lectureRepository.save(lecture);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload file: " + e.getMessage(), e);
+        }
     }
 
-    // Delete a lecture by ID
-    public void deleteLecture(Long id) {
-        lectureRepository.deleteById(id);
+    // Delete file and remove its link from lecture materials
+    @Transactional
+    public void deleteLectureMaterial(Long lectureId, String fileUrl) {
+        try {
+            // Fetch the lecture
+            Lecture lecture = getLectureById(lectureId);
+            if (lecture == null) {
+                throw new RuntimeException("Lecture not found with ID: " + lectureId);
+            }
+
+            // Remove the file URL from the lecture's noteLinks
+            List<String> noteLinks = lecture.getNoteLinks();
+            if (!noteLinks.remove(fileUrl)) {
+                throw new RuntimeException("File not found in lecture materials: " + fileUrl);
+            }
+            lecture.setNoteLinks(noteLinks);
+
+            // Save the updated lecture
+            lectureRepository.save(lecture);
+
+            // Delete the file from the local filesystem
+            Path filePath = Paths.get(UPLOAD_DIR).resolve(fileUrl.replace("/uploads/lecture-materials/", ""));
+            Files.deleteIfExists(filePath);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete file: " + e.getMessage(), e);
+        }
     }
 
-    // Add a new note to a lecture
-    public Lecture addNoteToLecture(Long lectureId, String noteUrl) {
-        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() ->
-                new RuntimeException("Lecture not found with ID: " + lectureId)
-        );
-
-        // Add the note URL to the noteLinks list
-        lecture.getNoteLinks().add(noteUrl);
-
-        // Save the updated lecture
-        return lectureRepository.save(lecture);
-    }
-
-    // Remove a note from a lecture
-    public Lecture removeNoteFromLecture(Long lectureId, String noteUrl) {
-        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() ->
-                new RuntimeException("Lecture not found with ID: " + lectureId)
-        );
-
-        // Remove the note URL from the noteLinks list
-        lecture.getNoteLinks().remove(noteUrl);
-
-        // Save the updated lecture
-        return lectureRepository.save(lecture);
-    }
 }

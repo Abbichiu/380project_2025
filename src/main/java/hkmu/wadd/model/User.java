@@ -41,6 +41,7 @@ public class User {
     public User(String username, String password, String[] roles) {
         this.username = username;
         this.password = "{noop}" + password;
+
         for (String role : roles) {
             this.roles.add(new UserRole(this, role));
         }
