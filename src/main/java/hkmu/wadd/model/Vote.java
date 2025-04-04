@@ -1,27 +1,47 @@
 package hkmu.wadd.model;
 
 
-
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
-@Table(name = "vote")
+@Table(name = "vote", uniqueConstraints = @UniqueConstraint(columnNames = {"poll_id", "user_id", "selected_option"}))
 public class Vote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "poll_id")
-    private Poll poll;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "poll_id", nullable = false)
+    private Poll poll; // Reference to the poll
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private UUID userId; // UUID of the user who voted
+
 
     @Column(name = "selected_option", nullable = false)
-    private int selectedOption; // Index of the chosen option (1, 2, 3, or 4)
+    private int selectedOption; // Index of the selected option in the poll's options list the selected option (integer)
+
+
+
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public int getSelectedOption() {
+        return selectedOption;
+    }
+
+    public void setSelectedOption(int selectedOption) {
+        this.selectedOption = selectedOption;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
 
     // Getters and setters
     public Long getId() {
@@ -40,19 +60,5 @@ public class Vote {
         this.poll = poll;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public int getSelectedOption() {
-        return selectedOption;
-    }
-
-    public void setSelectedOption(int selectedOption) {
-        this.selectedOption = selectedOption;
-    }
 }

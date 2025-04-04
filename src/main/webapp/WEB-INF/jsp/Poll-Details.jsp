@@ -10,6 +10,11 @@
     h1, h2 {
       color: #333;
     }
+    .error-message {
+      color: red;
+      font-weight: bold;
+      margin: 10px 0;
+    }
     .poll-form {
       margin-top: 20px;
     }
@@ -36,16 +41,22 @@
 </head>
 <body>
 <h1>Poll Details</h1>
+<!-- Display error message if present -->
+<c:if test="${not empty error}">
+  <div class="error-message">${error}</div>
+</c:if>
+
 <h2>${poll.question}</h2>
 
 <!-- Poll form -->
-<form class="poll-form" action="/Lab10/poll/vote" method="post">
+<form class="poll-form" action="${pageContext.request.contextPath}/poll/vote" method="post">
+  <input type="hidden" name="_csrf" value="${_csrf.token}" />
   <input type="hidden" name="pollId" value="${poll.id}">
   <ul class="poll-options">
-    <c:forEach var="option" items="${poll.options}">
+    <c:forEach var="option" items="${poll.options}" varStatus="status">
       <li>
         <label>
-          <input type="checkbox" name="selectedOptions" value="${option}">
+          <input type="checkbox" name="selectedOptions" value="${status.index}">
             ${option}
         </label>
       </li>

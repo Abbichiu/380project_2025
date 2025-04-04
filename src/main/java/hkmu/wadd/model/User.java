@@ -35,8 +35,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments; // A user can write multiple comments
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Vote> votes; // A user can vote on multiple polls
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vote> votes;
 
     public User(String username, String password, String[] roles) {
         this.username = username;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Poll Result</title>
+  <title>Poll Results</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -10,78 +10,73 @@
     h1, h2 {
       color: #333;
     }
-    ul {
+    .error-message {
+      color: red;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .comments-section {
+      margin-top: 30px;
+    }
+    .comments-section ul {
       list-style-type: none;
       padding: 0;
     }
-    ul li {
+    .comments-section li {
       margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
     }
-    .votes {
-      font-weight: bold;
-    }
-    .highlight {
-      color: #fff;
-      background-color: #007bff;
-      padding: 2px 5px;
-      border-radius: 4px;
-    }
-    .comments {
+    .comment-form {
       margin-top: 20px;
     }
-    .comment {
-      margin-bottom: 15px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #f9f9f9;
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
     }
-    .comment .username {
-      font-weight: bold;
-      color: #007bff;
+    button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
     }
-    .comment .role {
-      font-style: italic;
-      color: #666;
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-<h1>Poll Result</h1>
+<h1>Poll Results</h1>
 <h2>${poll.question}</h2>
 
-<!-- Display poll options with vote counts -->
+<!-- Display vote counts -->
 <ul>
-  <c:forEach var="option" items="${poll.options}" varStatus="status">
-    <li>
-      <span class="votes ${selectedOptions.contains(option) ? 'highlight' : ''}">
-        ${option} - ${voteCounts[status.index]} votes
-      </span>
-    </li>
+  <c:forEach var="count" items="${voteCounts}" varStatus="status">
+    <li>Option ${status.index + 1}: ${count} votes</li>
   </c:forEach>
 </ul>
 
-<!-- Display list of comments -->
-<div class="comments">
+<!-- Display comments section -->
+<div class="comments-section">
   <h2>Comments</h2>
-  <c:choose>
-    <c:when test="${not empty poll.comments}">
-      <c:forEach var="comment" items="${poll.comments}">
-        <div class="comment">
-          <p>
-            <span class="username">${comment.user.username}</span>
-            (<span class="role">${comment.user.role}</span>):
-          </p>
-          <p>${comment.content}</p>
-        </div>
-      </c:forEach>
-    </c:when>
-    <c:otherwise>
-      <p>No comments available for this poll.</p>
-    </c:otherwise>
-  </c:choose>
+  <ul>
+    <c:forEach var="comment" items="${poll.comments}">
+      <li>
+        <strong>${comment.user.username} (${comment.user.roles[0].role}):</strong>
+        <p>${comment.content}</p>
+      </li>
+    </c:forEach>
+  </ul>
 </div>
 
-<a href="/">Back to Index</a>
+<!-- Add a comment -->
+<form class="comment-form" action="${pageContext.request.contextPath}/poll/${poll.id}/comment" method="post">
+  <input type="hidden" name="_csrf" value="${_csrf.token}" />
+  <textarea name="content" placeholder="Add your comment here..." required></textarea>
+  <button type="submit">Add Comment</button>
+</form>
 </body>
 </html>

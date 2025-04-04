@@ -19,10 +19,10 @@ public class Poll {
     @Column(name = "option_text")
     private List<String> options; // List of poll options
 
-    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<Comment> comments; // Comments on the poll
 
-    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true,fetch =FetchType.EAGER)
     private List<Vote> votes; // Votes for the poll
 
     // Getters and setters

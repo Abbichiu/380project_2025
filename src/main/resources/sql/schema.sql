@@ -84,4 +84,6 @@ CREATE TABLE IF NOT EXISTS vote (
                                     FOREIGN KEY (poll_id) REFERENCES poll(id) ON DELETE CASCADE,
                                     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+ALTER TABLE vote ALTER COLUMN id RESTART WITH 3;
+
 
