@@ -2,11 +2,10 @@ package hkmu.wadd.service;
 
 import hkmu.wadd.dao.LectureRepository;
 import hkmu.wadd.model.Lecture;
-
-import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
@@ -35,38 +34,34 @@ public class LectureService {
         }
         return lecture;
     }
+
+    // Save the updated Lecture entity
+    public void saveLecture(Lecture lecture) {
+        lectureRepository.save(lecture);
+    }
     // Upload file and add its link to lecture materials
-    @Transactional
     public void uploadLectureMaterial(Long lectureId, MultipartFile file) {
         try {
-            // Fetch the lecture
+            // Define the base upload directory (relative to your project root)
+            Path uploadDirectory = Paths.get(System.getProperty("user.dir")).resolve("uploads").resolve("lecture-materials");
+
+            // Create the directory if it doesn't exist
+            if (!Files.exists(uploadDirectory)) {
+                Files.createDirectories(uploadDirectory); // Creates all necessary directories
+            }
+
+            // Resolve the file path within the upload directory
+            Path filePath = uploadDirectory.resolve(file.getOriginalFilename()).normalize();
+
+            // Save the file to the resolved path
+            file.transferTo(filePath.toFile());
+
+            // Update the lecture's noteLinks (e.g., save the relative path to the database)
             Lecture lecture = getLectureById(lectureId);
-            if (lecture == null) {
-                throw new RuntimeException("Lecture not found with ID: " + lectureId);
-            }
-
-            // Save the file to the local filesystem
-            Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath); // Create the directory if it doesn't exist
-            }
-
-            String fileName = file.getOriginalFilename();
-            Path filePath = uploadPath.resolve(fileName);
-            Files.write(filePath, file.getBytes());
-
-            // Generate the file URL (assuming the files are served from "/uploads/")
-            String fileUrl = "/uploads/lecture-materials/" + fileName;
-
-            // Add the file URL to the lecture's noteLinks
-            List<String> noteLinks = lecture.getNoteLinks();
-            noteLinks.add(fileUrl);
-            lecture.setNoteLinks(noteLinks);
-
-            // Save the updated lecture
-            lectureRepository.save(lecture);
+            lecture.getNoteLinks().add("lecture-materials/" + file.getOriginalFilename());
+            saveLecture(lecture); // Save the lecture entity
         } catch (Exception e) {
-            throw new RuntimeException("Failed to upload file: " + e.getMessage(), e);
+            throw new RuntimeException("Error while uploading file: " + e.getMessage(), e);
         }
     }
 

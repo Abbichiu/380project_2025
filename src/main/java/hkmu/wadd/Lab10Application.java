@@ -13,7 +13,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 import java.util.Collections;
 @EnableGlobalMethodSecurity(securedEnabled = true)
-@SpringBootApplication
+
+@SpringBootApplication(scanBasePackages = "hkmu.wadd")
 public class Lab10Application {
 
     public static void main(String[] args) {

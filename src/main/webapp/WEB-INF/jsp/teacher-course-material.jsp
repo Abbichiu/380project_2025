@@ -85,7 +85,9 @@
   <ul>
     <c:forEach var="noteUrl" items="${lecture.noteLinks}">
       <li>
-        <a href="${noteUrl}" target="_blank">Download</a>
+        <!-- Link to download files -->
+        <a href="${pageContext.request.contextPath}/lecture/${lecture.id}/download?fileUrl=${noteUrl}" target="_blank">Download</a>
+        <!-- Delete button for teachers -->
         <form action="${pageContext.request.contextPath}/teacher/lecture/${lecture.id}/file" method="post" style="display:inline;">
           <input type="hidden" name="_csrf" value="${_csrf.token}" />
           <input type="hidden" name="_method" value="delete">
@@ -95,8 +97,8 @@
       </li>
     </c:forEach>
   </ul>
-</div>
 
+</div>
 <!-- Section: Comments -->
 <div class="section">
   <h2>Comments</h2>

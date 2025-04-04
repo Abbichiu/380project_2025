@@ -60,12 +60,14 @@
 <h1>Lecture: ${lecture.title}</h1>
 
 <!-- Section: Download Links -->
+
 <div class="section">
   <h2>Lecture Notes</h2>
   <ul>
     <c:forEach var="noteUrl" items="${lecture.noteLinks}">
       <li>
-        <a href="${noteUrl}" target="_blank">Download</a>
+        <!-- Link to download files -->
+        <a href="${pageContext.request.contextPath}/lecture/${lecture.id}/download?fileUrl=${noteUrl}" target="_blank">Download</a>
       </li>
     </c:forEach>
   </ul>

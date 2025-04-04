@@ -29,7 +29,7 @@ public class Lecture {
     @JoinColumn(name = "course_id") // Defines the foreign key relationship
     private Course course;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "lecture_notes", joinColumns = @JoinColumn(name = "lecture_id"))
     @Column(name = "note_url")
     private List<String> noteLinks; // Stores the URLs for lecture notes
