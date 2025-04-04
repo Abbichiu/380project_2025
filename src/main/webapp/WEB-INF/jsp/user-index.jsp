@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Welcome</title>
+  <title>User Dashboard</title>
 </head>
 <style>
   body {
@@ -33,16 +33,14 @@
   }
 </style>
 <body>
-<h1>Welcome to the Portal</h1>
+<h1>User Dashboard</h1>
 
-<div>
-  <security:authorize access="isAnonymous()">
-    <p>Please <a href="<c:url value='/login' />">log in</a>.</p>
-  </security:authorize>
-  <security:authorize access="isAuthenticated()">
-    <p>Welcome back! <a href="<c:url value='/index' />">Go to your dashboard</a>.</p>
-  </security:authorize>
-</div>
+<p>Welcome, <strong>${username}</strong>!</p>
+
+<form action="<c:url value='/logout' />" method="POST">
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  <button type="submit">Logout</button>
+</form>
 
 <!-- Display Courses -->
 <div class="section">
@@ -78,6 +76,5 @@
     </c:forEach>
   </ul>
 </div>
-
 </body>
 </html>

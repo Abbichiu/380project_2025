@@ -22,8 +22,13 @@ public class CustomUserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
+
+
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Find the user in the database by username
+        if (username == null || username.trim().isEmpty()) {
+            throw new UsernameNotFoundException("Username cannot be null or empty");
+        }
+
         User user = userRepository.findByUsername(username).orElse(null);
 
         if (user == null) {
@@ -32,11 +37,21 @@ public class CustomUserService implements UserDetailsService {
 
         // Convert user roles to GrantedAuthority objects
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (UserRole role : user.getRoles()) {
-            authorities.add(new SimpleGrantedAuthority(role.getRole()));
+        if (user.getRoles() != null) {
+            for (UserRole role : user.getRoles()) {
+                authorities.add(new SimpleGrantedAuthority(role.getRole()));
+            }
+        }
+
+        // Strip "{noop}" from the password before returning
+        String password = user.getPassword();
+        if (password.startsWith("{noop}")) {
+            password = password.substring("{noop}".length());
         }
 
         // Return a Spring Security User object with username, password, and roles
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), password, authorities);
     }
-}
+
+    }
+

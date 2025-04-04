@@ -8,9 +8,10 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
-
 public class SecurityConfig {
 
     @Bean
@@ -30,20 +31,21 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // Custom login page
-                        .defaultSuccessUrl("/Lab10/index", true) // Ensure success URL includes the context path
+                        .defaultSuccessUrl("/index", true) // Redirect to /index after login
                         .failureUrl("/login?error") // Redirect to /login?error on login failure
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout") // Custom logout URL
-                        .logoutSuccessUrl("/login?logout") // Redirect to /login?logout after logout
+                        .logoutSuccessUrl("/") // Redirect to homepage after logout
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("JSESSIONID", "remember-me") // Delete cookies on logout
                 )
                 .rememberMe(remember -> remember
-                        .key("uniqueAndSecret") // Key for remember-me functionality
-                        .tokenValiditySeconds(86400) // Token validity (1 day)
-                );
+                        .key("uniqueAndSecret") // Key to secure the remember-me tokens
+                        .tokenValiditySeconds(86400) // Validity period for the token (1 day)
+                        .rememberMeParameter("remember-me") // The parameter name from the login form
+                ).httpBasic(withDefaults());;
         return http.build();
     }
 }
