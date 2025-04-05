@@ -58,6 +58,10 @@
 <h2>${poll.question}</h2>
 <!-- Back Button -->
 <a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
+<form action="<c:url value='/logout' />" method="POST">
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  <button type="submit">Logout</button>
+</form>
 
 <ul>
   <c:forEach var="count" items="${voteCounts}" varStatus="status">

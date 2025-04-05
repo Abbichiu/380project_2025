@@ -13,6 +13,8 @@ import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -93,6 +95,7 @@ public class PollService {
         vote.setPoll(poll);
         vote.setUserId(userId);
         vote.setSelectedOption(selectedOption);
+        vote.setVotedAt(LocalDateTime.now()); // Set the current timestamp for votedAt
         voteRepository.save(vote);
     }
 
@@ -127,6 +130,7 @@ public class PollService {
         poll.removeComment(comment); // Use helper method to remove the comment
         pollRepository.save(poll); // Save the poll with the comment removed
     }
+    @Transactional
     public List<Vote> getVotingHistoryByUser(UUID userId) {
         // Fetch all votes by the user
         List<Vote> votes = voteRepository.findByUserId(userId);

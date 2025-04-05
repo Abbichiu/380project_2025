@@ -36,6 +36,10 @@
 <h1>Your Voting History</h1>
 <!-- Back Button -->
 <a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
+<form action="<c:url value='/logout' />" method="POST">
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  <button type="submit">Logout</button>
+</form>
 
 <%-- Check if there are any votes --%>
 <c:if test="${not empty votingHistory}">

@@ -4,6 +4,7 @@ import hkmu.wadd.dao.LectureRepository;
 import hkmu.wadd.model.Lecture;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,10 +14,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+
+
 @Service
 public class LectureService {
 
-    private static final String UPLOAD_DIR = "uploads/lecture-materials"; // Directory to store uploaded files
+    // Inject the upload directory from application.properties or application.yml
+    @Value("${lecture.materials.upload-dir}")
+    private String uploadDirectory;
+
     @Autowired
     private LectureRepository lectureRepository;
 
@@ -24,7 +30,6 @@ public class LectureService {
     public List<Lecture> getAllLectures() {
         return lectureRepository.findAll();
     }
-
 
     // Get a lecture by ID
     public Lecture getLectureById(Long lectureId) {
@@ -39,29 +44,44 @@ public class LectureService {
     public void saveLecture(Lecture lecture) {
         lectureRepository.save(lecture);
     }
+
     // Upload file and add its link to lecture materials
-    public void uploadLectureMaterial(Long lectureId, MultipartFile file) {
+    // Upload multiple files and add their links to lecture materials
+    public void uploadLectureMaterials(Long lectureId, MultipartFile[] files) {
         try {
-            // Define the base upload directory (relative to your project root)
-            Path uploadDirectory = Paths.get(System.getProperty("user.dir")).resolve("uploads").resolve("lecture-materials");
+            // Define the base upload directory
+            Path uploadPath = Paths.get(System.getProperty("user.dir")).resolve(uploadDirectory);
 
             // Create the directory if it doesn't exist
-            if (!Files.exists(uploadDirectory)) {
-                Files.createDirectories(uploadDirectory); // Creates all necessary directories
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
             }
 
-            // Resolve the file path within the upload directory
-            Path filePath = uploadDirectory.resolve(file.getOriginalFilename()).normalize();
-
-            // Save the file to the resolved path
-            file.transferTo(filePath.toFile());
-
-            // Update the lecture's noteLinks (e.g., save the relative path to the database)
+            // Fetch the lecture
             Lecture lecture = getLectureById(lectureId);
-            lecture.getNoteLinks().add("lecture-materials/" + file.getOriginalFilename());
-            saveLecture(lecture); // Save the lecture entity
+            if (lecture == null) {
+                throw new RuntimeException("Lecture not found with ID: " + lectureId);
+            }
+
+            // Iterate through each file and process it
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    // Generate a unique filename for the uploaded file
+                    String uniqueFilename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                    Path filePath = uploadPath.resolve(uniqueFilename).normalize();
+
+                    // Save the file to the resolved path
+                    file.transferTo(filePath.toFile());
+
+                    // Add the file's relative path to the lecture's noteLinks
+                    lecture.getNoteLinks().add(uniqueFilename);
+                }
+            }
+
+            // Save the updated lecture
+            saveLecture(lecture);
         } catch (Exception e) {
-            throw new RuntimeException("Error while uploading file: " + e.getMessage(), e);
+            throw new RuntimeException("Error while uploading files: " + e.getMessage(), e);
         }
     }
 
@@ -86,11 +106,11 @@ public class LectureService {
             lectureRepository.save(lecture);
 
             // Delete the file from the local filesystem
-            Path filePath = Paths.get(UPLOAD_DIR).resolve(fileUrl.replace("/uploads/lecture-materials/", ""));
+            Path uploadPath = Paths.get(System.getProperty("user.dir")).resolve(uploadDirectory);
+            Path filePath = uploadPath.resolve(fileUrl);
             Files.deleteIfExists(filePath);
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete file: " + e.getMessage(), e);
         }
     }
-
 }

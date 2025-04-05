@@ -69,25 +69,32 @@
 <body>
 <h1>Lecture: ${lecture.title}</h1>
 
+<!-- Back Button -->
+<a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
+<form action="<c:url value='/logout' />" method="POST">
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  <button type="submit">Logout</button>
+</form>
+
 <!-- Section: Upload Files -->
 <div class="section">
   <h2>Upload Lecture Notes</h2>
-  <form action="${pageContext.request.contextPath}/teacher/lecture/${lecture.id}/upload" method="post" enctype="multipart/form-data">
+  <form action="${pageContext.request.contextPath}/teacher/lecture/${lecture.id}/upload-multiple" method="post" enctype="multipart/form-data">
     <input type="hidden" name="_csrf" value="${_csrf.token}" />
-    <input type="file" name="file" required>
-    <button type="submit">Upload</button>
+    <input type="file" name="files" multiple required> <!-- Multiple file input -->
+    <button type="submit">Upload Files</button>
   </form>
 </div>
 
-<!-- Section: Download Links -->
+<!-- Section: Lecture Notes -->
 <div class="section">
   <h2>Lecture Notes</h2>
   <ul>
     <c:forEach var="noteUrl" items="${lecture.noteLinks}">
       <li>
-        <!-- Link to download files -->
+        <!-- File download link -->
         <a href="${pageContext.request.contextPath}/lecture/${lecture.id}/download?fileUrl=${noteUrl}" target="_blank">Download</a>
-        <!-- Delete button for teachers -->
+        <!-- File delete button -->
         <form action="${pageContext.request.contextPath}/teacher/lecture/${lecture.id}/file" method="post" style="display:inline;">
           <input type="hidden" name="_csrf" value="${_csrf.token}" />
           <input type="hidden" name="_method" value="delete">
@@ -97,8 +104,8 @@
       </li>
     </c:forEach>
   </ul>
-
 </div>
+
 <!-- Section: Comments -->
 <div class="section">
   <h2>Comments</h2>
@@ -119,8 +126,6 @@
 
   <!-- Add New Comment -->
   <h3>Add a Comment</h3>
-
-  <!-- Use security:authorize to dynamically set the action URL -->
   <security:authorize access="hasRole('ROLE_TEACHER')">
     <form class="comment-form" action="${pageContext.request.contextPath}/teacher/lecture/${lecture.id}/comment" method="post">
       <input type="hidden" name="_csrf" value="${_csrf.token}" />

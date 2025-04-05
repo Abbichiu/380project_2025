@@ -43,6 +43,10 @@
 <h1>Poll Details</h1>
 <!-- Back Button -->
 <a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
+<form action="<c:url value='/logout' />" method="POST">
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  <button type="submit">Logout</button>
+</form>
 <!-- Display error message if present -->
 <c:if test="${not empty error}">
   <div class="error-message">${error}</div>

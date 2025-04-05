@@ -47,15 +47,12 @@ public class SecurityConfig {
                         .requestMatchers("/teacher/**").hasRole("TEACHER")
 
                         // Allow access to /lecture/** for everyone
-                        .requestMatchers("/lecture/**").permitAll()
+                        .requestMatchers("/lecture/**").authenticated()
 
                         // Require authentication for /poll/** endpoints
                         .requestMatchers("/poll/**").authenticated()
 
-                        // Restrict access to /user/** and /ticket/** for specific roles
-                        .requestMatchers("/user/**").hasRole("ADMIN")
-                        .requestMatchers("/ticket/delete/**").hasRole("ADMIN")
-                        .requestMatchers("/ticket/**").hasAnyRole("USER", "ADMIN")
+
 
                         // Allow DELETE requests for /teacher/poll/** to TEACHER role
                         .requestMatchers(HttpMethod.DELETE, "/teacher/poll/**").hasRole("TEACHER")

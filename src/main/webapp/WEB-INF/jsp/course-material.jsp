@@ -63,6 +63,8 @@
 
 <div class="section">
   <h2>Lecture Notes</h2>
+  <!-- Back Button -->
+  <a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
   <ul>
     <c:forEach var="noteUrl" items="${lecture.noteLinks}">
       <li>

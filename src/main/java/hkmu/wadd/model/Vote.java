@@ -1,13 +1,12 @@
 package hkmu.wadd.model;
 
-
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "vote", uniqueConstraints = @UniqueConstraint(columnNames = {"poll_id", "user_id", "selected_option"}))
+@Table(name = "vote")
 public class Vote {
 
     @Id
@@ -16,51 +15,24 @@ public class Vote {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "poll_id", nullable = false)
-    private Poll poll; // Reference to the poll
+    private Poll poll;
 
     @Column(name = "user_id", nullable = false)
-    private UUID userId; // UUID of the user who voted
-
+    private UUID userId;
 
     @Column(name = "selected_option", nullable = false)
-    private int selectedOption; // Index of the selected option in the poll's options list the selected option (integer)
-
+    private int selectedOption;
 
     @Column(name = "voted_at", nullable = false)
-    private LocalDateTime votedAt; // Timestamp when the vote was cast
+    private LocalDateTime votedAt;
 
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public int getSelectedOption() {
-        return selectedOption;
-    }
-
-    public void setSelectedOption(int selectedOption) {
-        this.selectedOption = selectedOption;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    // Getters and setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LocalDateTime getVotedAt() {
-        return votedAt;
-    }
-
-    public void setVotedAt(LocalDateTime votedAt) {
-        this.votedAt = votedAt;
     }
 
     public Poll getPoll() {
@@ -71,5 +43,27 @@ public class Vote {
         this.poll = poll;
     }
 
+    public UUID getUserId() {
+        return userId;
+    }
 
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
+    public int getSelectedOption() {
+        return selectedOption;
+    }
+
+    public void setSelectedOption(int selectedOption) {
+        this.selectedOption = selectedOption;
+    }
+
+    public LocalDateTime getVotedAt() {
+        return votedAt;
+    }
+
+    public void setVotedAt(LocalDateTime votedAt) {
+        this.votedAt = votedAt;
+    }
 }

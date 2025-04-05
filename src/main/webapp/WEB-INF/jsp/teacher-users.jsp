@@ -31,6 +31,10 @@
 <h1>User Management</h1>
 <!-- Back Button -->
 <a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
+<form action="<c:url value='/logout' />" method="POST">
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  <button type="submit">Logout</button>
+</form>
 
 <!-- Success Message -->
 <c:if test="${not empty successMessage}">
@@ -38,12 +42,7 @@
       ${successMessage}
   </div>
 </c:if>
-<!-- Back Button -->
-<div class="back-button">
-  <a href="<c:url value='/index' />" style="text-decoration: none; color: white; background-color: #007bff; padding: 10px 20px; border-radius: 5px;">
-    Back to Dashboard
-  </a>
-</div>
+
 
 <table>
   <thead>
