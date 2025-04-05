@@ -5,13 +5,17 @@ import hkmu.wadd.model.Poll;
 import hkmu.wadd.model.User;
 import hkmu.wadd.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/poll")
@@ -20,80 +24,104 @@ public class PollController {
     @Autowired
     private PollService pollService;
 
-
-    // Fetch poll details by ID
-    @GetMapping("/{pollId}")
-    public String showPollDetails(@PathVariable Long pollId, Model model) {
-        Poll poll = pollService.getPollById(pollId); // Use the service layer to fetch the poll
-        model.addAttribute("poll", poll);
-        return "Poll-Details"; // Render the poll details view
-    }
     @Autowired
     private UserRepository userRepository;
-    @PostMapping("/vote")
-    public String vote(@RequestParam Long pollId,
-                       @RequestParam(required = false) List<Integer> selectedOptions,
-                       Authentication authentication,
-                       Model model) {
-        Poll poll = pollService.getPollById(pollId);
-        if (poll == null) {
-            throw new RuntimeException("Poll not found");
+
+    // Fetch poll details for a specific poll
+    @GetMapping("/{pollId}")
+    public String getPollDetails(@PathVariable Long pollId, Model model) {
+        Poll poll = pollService.getPollByIdWithDetails(pollId); // Fetch poll with all details
+        model.addAttribute("poll", poll);
+        return "Poll-Details"; // Render Poll-Details.jsp
+    }
+
+    // Role-based endpoint to view poll results (student or teacher)
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PollController.class);
+
+    // Role-based endpoint to view poll results (student or teacher)
+    @GetMapping("/{pollId}/result")
+    public String getRoleBasedPollResult(@PathVariable Long pollId, Authentication authentication, Model model) {
+        Poll poll = pollService.getPollByIdWithDetails(pollId); // Fetch poll with all details
+        model.addAttribute("poll", poll);
+        model.addAttribute("voteCounts", pollService.calculateVoteCounts(poll));
+
+        // Debugging: Log the user's roles
+        List<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        logger.debug("User [{}] has roles: {}", authentication.getName(), roles);
+
+        // Check if the user is a teacher
+        boolean isTeacher = roles.contains("ROLE_TEACHER");
+        if (isTeacher) {
+            logger.debug("User [{}] is a teacher, redirecting to teacher-Poll-Result.", authentication.getName());
+            return "redirect:/poll/teacher/" + pollId + "/result"; // Redirect teachers to teacher-specific path
         }
 
+        logger.debug("User [{}] is not a teacher, showing Poll-Result.", authentication.getName());
+        return "Poll-Result"; // Render Poll-Result.jsp for students
+    }
+
+    // Teacher-specific poll results
+    @GetMapping("/teacher/{pollId}/result")
+    @Secured("ROLE_TEACHER")
+    public String getTeacherPollResult(@PathVariable Long pollId, Model model, Authentication authentication) {
+        Poll poll = pollService.getPollByIdWithDetails(pollId); // Fetch poll with all details
+        model.addAttribute("poll", poll);
+        model.addAttribute("voteCounts", pollService.calculateVoteCounts(poll));
+
+        // Debugging: Log confirmation that the user is accessing the teacher view
+        logger.debug("Teacher [{}] is accessing teacher-Poll-Result for poll ID [{}].", authentication.getName(), pollId);
+
+        return "teacher-Poll-Result"; // Render teacher-specific results
+    }
+
+    // Handle voting
+    @PostMapping("/vote")
+    public String vote(@RequestParam Long pollId,
+                       @RequestParam List<Integer> selectedOptions, // Accept multiple options
+                       Authentication authentication,
+                       Model model) {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
-
         UUID userId = user.getId();
 
         try {
-            if (selectedOptions != null) {
-                selectedOptions.forEach(optionIndex -> pollService.addVote(pollId, optionIndex, userId));
+            // Add votes for each selected option
+            for (int selectedOption : selectedOptions) {
+                pollService.addVote(pollId, selectedOption, userId);
             }
         } catch (RuntimeException e) {
+            // Handle errors (e.g., duplicate voting or invalid options)
+            Poll poll = pollService.getPollByIdWithDetails(pollId);
             model.addAttribute("poll", poll);
+            model.addAttribute("voteCounts", pollService.calculateVoteCounts(poll));
             model.addAttribute("error", e.getMessage());
-            return "Poll-Details";
+            return "Poll-Details"; // Render Poll-Details.jsp with error message
         }
 
-        return "redirect:/poll/result?pollId=" + pollId;
+        return "redirect:/poll/" + pollId + "/result"; // Redirect to poll results
     }
-    // Fetch poll results
-    @GetMapping("/result")
-    public String getPollResult(@RequestParam Long pollId, Model model) {
-        Poll poll = pollService.getPollById(pollId);
-        if (poll == null) {
-            throw new RuntimeException("Poll not found");
-        }
 
-        List<Integer> voteCounts = pollService.calculateVoteCounts(poll);
-
-        model.addAttribute("poll", poll);
-        model.addAttribute("voteCounts", voteCounts);
-
-        return "Poll-Result"; // Render Poll-Result.jsp
-    }
-    // Add a comment to a poll
+    // Add a comment to a poll (accessible to both students and teachers)
     @PostMapping("/{pollId}/comment")
+    @Transactional
     public String addComment(@PathVariable Long pollId,
                              @RequestParam String content,
-                             Authentication authentication,
-                             Model model) {
-        // Get the username of the currently authenticated user
+                             Authentication authentication) {
         String username = authentication.getName();
+        pollService.addComment(pollId, username, content); // Add the comment
+        return "redirect:/poll/" + pollId + "/result"; // Redirect to poll results
+    }
 
-        try {
-            // Add the comment using the PollService
-            pollService.addComment(pollId, username, content);
-        } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
-            return "redirect:/poll/" + pollId; // Redirect back to poll details page with error
-        }
-
-        // Redirect to the poll results page after adding the comment
-        return "redirect:/poll/result?pollId=" + pollId;
+    @DeleteMapping("/teacher/{pollId}/comment/{commentId}")
+    @Secured("ROLE_TEACHER")
+    @Transactional
+    public String deleteComment(@PathVariable Long pollId, @PathVariable Long commentId) {
+        System.out.println("Delete request received for pollId: " + pollId + ", commentId: " + commentId);
+        pollService.deleteComment(commentId); // Delete the comment
+        return "redirect:/poll/teacher/" + pollId + "/result"; // Redirect to teacher-specific poll results
     }
 
 }
-
-

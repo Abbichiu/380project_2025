@@ -10,6 +10,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig  implements WebMvcConfigurer {
     @Bean
     public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+
+        System.out.println("HiddenHttpMethodFilter initialized");
         return new HiddenHttpMethodFilter();
     }
     @Override
