@@ -67,4 +67,16 @@ public class CommentService {
         // Delete the comment
         commentRepository.deleteById(commentId);
     }
+    // Fetch comments by user
+    public List<Comment> getCommentsByUser(Authentication authentication) {
+        // Get the authenticated user's username
+        String username = authentication.getName();
+
+        // Fetch the user entity
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+
+        // Fetch comments by user
+        return commentRepository.findByUserId(user.getId());
+    }
 }
