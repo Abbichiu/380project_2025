@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-    @Service
+import java.util.List;
+import java.util.UUID;
+
+@Service
     public class UserService {
 
         @Autowired
@@ -42,4 +45,17 @@ import org.springframework.transaction.annotation.Transactional;
             // Add the role to the user's roles list
             user.getRoles().add(defaultRole);
         }
+        public List<User> getAllUsers() {
+            return userRepository.findAll();
+        }
+
+        public User getUserById(UUID id) {
+            return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        }
+    @Transactional
+    public void deleteUserById(UUID id) {
+        userRepository.deleteById(id);
     }
+
+
+        }

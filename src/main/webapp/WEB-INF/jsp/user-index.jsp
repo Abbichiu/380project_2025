@@ -42,6 +42,18 @@
   <button type="submit">Logout</button>
 </form>
 
+<!-- Display Teacher Link -->
+<security:authorize access="hasRole('ROLE_TEACHER')">
+  <div class="section">
+    <h2>Teacher Tools</h2>
+    <ul>
+      <li>
+        <a href="<c:url value='/teacher/users' />">Manage Users</a>
+      </li>
+    </ul>
+  </div>
+</security:authorize>
+
 <!-- Display Courses -->
 <div class="section">
   <h2>Courses</h2>
@@ -66,7 +78,6 @@
         <security:authorize access="!hasRole('ROLE_TEACHER')">
           <a href="<c:url value='/lecture/${lecture.id}' />">${lecture.title}</a>
         </security:authorize>
-
       </li>
     </c:forEach>
   </ul>

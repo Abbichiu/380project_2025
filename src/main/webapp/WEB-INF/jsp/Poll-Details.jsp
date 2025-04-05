@@ -41,6 +41,8 @@
 </head>
 <body>
 <h1>Poll Details</h1>
+<!-- Back Button -->
+<a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
 <!-- Display error message if present -->
 <c:if test="${not empty error}">
   <div class="error-message">${error}</div>

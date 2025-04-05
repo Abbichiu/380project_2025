@@ -50,6 +50,8 @@
 </head>
 <body>
 <h1>Poll Results</h1>
+<!-- Back Button -->
+<a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
 <h2>${poll.question}</h2>
 
 <!-- Display vote counts -->

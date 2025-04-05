@@ -56,6 +56,8 @@
 <body>
 <h1>Poll Results (Teacher)</h1>
 <h2>${poll.question}</h2>
+<!-- Back Button -->
+<a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
 
 <ul>
   <c:forEach var="count" items="${voteCounts}" varStatus="status">
