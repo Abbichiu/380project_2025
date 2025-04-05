@@ -3,6 +3,7 @@ package hkmu.wadd.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +26,8 @@ public class Vote {
     private int selectedOption; // Index of the selected option in the poll's options list the selected option (integer)
 
 
+    @Column(name = "voted_at", nullable = false)
+    private LocalDateTime votedAt; // Timestamp when the vote was cast
 
 
     public UUID getUserId() {
@@ -50,6 +53,14 @@ public class Vote {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDateTime getVotedAt() {
+        return votedAt;
+    }
+
+    public void setVotedAt(LocalDateTime votedAt) {
+        this.votedAt = votedAt;
     }
 
     public Poll getPoll() {

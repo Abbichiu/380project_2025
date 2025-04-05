@@ -3,6 +3,7 @@ package hkmu.wadd.controller;
 import hkmu.wadd.dao.UserRepository;
 import hkmu.wadd.model.Poll;
 import hkmu.wadd.model.User;
+import hkmu.wadd.model.Vote;
 import hkmu.wadd.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -122,6 +123,24 @@ public class PollController {
         System.out.println("Delete request received for pollId: " + pollId + ", commentId: " + commentId);
         pollService.deleteComment(commentId); // Delete the comment
         return "redirect:/poll/teacher/" + pollId + "/result"; // Redirect to teacher-specific poll results
+    }
+
+    @GetMapping("/history")
+    public String getVotingHistory(Authentication authentication, Model model) {
+        // Get the currently logged-in user's username
+        String username = authentication.getName();
+
+        // Retrieve the user by username
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        // Fetch the user's voting history
+        List<Vote> votingHistory = pollService.getVotingHistoryByUser(user.getId());
+
+        // Add voting history to the model
+        model.addAttribute("votingHistory", votingHistory);
+
+        return "Poll-History"; // Render poll-history.jsp
     }
 
 }

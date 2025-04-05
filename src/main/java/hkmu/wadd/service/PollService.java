@@ -127,4 +127,13 @@ public class PollService {
         poll.removeComment(comment); // Use helper method to remove the comment
         pollRepository.save(poll); // Save the poll with the comment removed
     }
+    public List<Vote> getVotingHistoryByUser(UUID userId) {
+        // Fetch all votes by the user
+        List<Vote> votes = voteRepository.findByUserId(userId);
+
+        // Initialize poll details for each vote (if lazy-loaded)
+        votes.forEach(vote -> Hibernate.initialize(vote.getPoll()));
+
+        return votes;
+    }
 }

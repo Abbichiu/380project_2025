@@ -46,10 +46,10 @@ INSERT INTO poll_options (poll_id, option_text) VALUES
                                                     (2, 'JavaScript');
 
 -- Insert Votes
-INSERT INTO vote (id, poll_id, user_id, selected_option) VALUES
-                                                             (1, 1, '11111111-1111-1111-1111-111111111111', 2), -- Student 1 votes for Option 2
-                                                             (2, 1, '22222222-2222-2222-2222-222222222222', 4); -- Student 2 votes for Option 4
-
+-- Insert Votes
+INSERT INTO vote (id, poll_id, user_id, selected_option, voted_at) VALUES
+                                                                       (1, 1, '11111111-1111-1111-1111-111111111111', 2, '2025-03-01 10:00:00'), -- Student 1 votes for Option 2
+                                                                       (2, 1, '22222222-2222-2222-2222-222222222222', 4, '2025-03-01 11:00:00'); -- Student 2 votes for Option 4
 -- Insert Comments on Lectures
 INSERT INTO comment ( content, lecture_id, poll_id, user_id) VALUES
                                                                     ( 'This lecture was very informative!', 1, NULL, '11111111-1111-1111-1111-111111111111'), -- Student 1 comments on Lecture 1

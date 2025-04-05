@@ -78,11 +78,13 @@ CREATE TABLE IF NOT EXISTS comment (
 );
 
 -- 10. Create the Vote table
+-- 10. Create the Vote table
 CREATE TABLE IF NOT EXISTS vote (
                                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
                                     poll_id BIGINT NOT NULL,
                                     user_id UUID NOT NULL,
                                     selected_option INT NOT NULL,
+                                    voted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Add the voted_at column
                                     FOREIGN KEY (poll_id) REFERENCES poll(id) ON DELETE CASCADE,
                                     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

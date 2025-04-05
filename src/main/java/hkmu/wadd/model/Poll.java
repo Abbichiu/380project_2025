@@ -1,6 +1,7 @@
 package hkmu.wadd.model;
 
 import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +19,18 @@ public class Poll {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "poll_options", joinColumns = @JoinColumn(name = "poll_id"))
     @Column(name = "option_text")
-    private List<String> options = new ArrayList<>(); // Initialize to prevent null pointer issues
+    private List<String> options = new ArrayList<>();
 
     @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Comment> comments = new ArrayList<>(); // Initialize to prevent null pointer issues
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Vote> votes = new ArrayList<>(); // Initialize to prevent null pointer issues
+    private List<Vote> votes = new ArrayList<>();
+
+
+
+
+
 
     // Getters and setters
     public Long getId() {
@@ -56,8 +62,8 @@ public class Poll {
     }
 
     public void setComments(List<Comment> comments) {
-        this.comments.clear(); // Clear the existing collection
-        this.comments.addAll(comments); // Add the new comments
+        this.comments.clear();
+        this.comments.addAll(comments);
     }
 
     public List<Vote> getVotes() {
@@ -68,14 +74,15 @@ public class Poll {
         this.votes = votes;
     }
 
+
     // Helper methods for managing the comments collection
     public void addComment(Comment comment) {
         comments.add(comment);
-        comment.setPoll(this); // Maintain the relationship
+        comment.setPoll(this);
     }
 
     public void removeComment(Comment comment) {
         comments.remove(comment);
-        comment.setPoll(null); // Break the relationship
+        comment.setPoll(null);
     }
 }

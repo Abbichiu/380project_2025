@@ -63,7 +63,12 @@
     </ul>
   </div>
 </security:authorize>
-
+<div class="section">
+  <h2>Polls</h2>
+  <ul>
+    <li><a href="<c:url value='/poll/history' />">View Your Voting History</a></li>
+  </ul>
+</div>
 <!-- Display Courses -->
 <div class="section">
   <h2>Courses</h2>
