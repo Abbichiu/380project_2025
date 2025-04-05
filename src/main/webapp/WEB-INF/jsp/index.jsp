@@ -36,9 +36,15 @@
 <h1>Welcome to the Portal</h1>
 
 <div>
+  <!-- Show login and register links for anonymous users -->
   <security:authorize access="isAnonymous()">
-    <p>Please <a href="<c:url value='/login' />">log in</a>.</p>
+    <p>
+      Please <a href="<c:url value='/login' />">log in</a>.
+      If you haven't created an account, <a href="<c:url value='/register' />">sign up</a>.
+    </p>
   </security:authorize>
+
+  <!-- Show dashboard link for authenticated users -->
   <security:authorize access="isAuthenticated()">
     <p>Welcome back! <a href="<c:url value='/index' />">Go to your dashboard</a>.</p>
   </security:authorize>

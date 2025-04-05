@@ -37,7 +37,9 @@ CREATE TABLE IF NOT EXISTS users (
                                      id UUID PRIMARY KEY,
                                      username VARCHAR(255) NOT NULL UNIQUE,
                                      email VARCHAR(255) NOT NULL UNIQUE,
-                                     password VARCHAR(255) NOT NULL
+                                     password VARCHAR(255) NOT NULL,
+                                     full_name VARCHAR(255) NOT NULL, -- New column for full name
+                                     phone_number VARCHAR(20) NOT NULL -- New column for phone number
 );
 
 -- 6. Create the User Roles table

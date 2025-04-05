@@ -1,8 +1,9 @@
 -- Insert Users (with UUIDs)
-INSERT INTO users (id, username, email, password ) VALUES
-                                                              ('11111111-1111-1111-1111-111111111111', 'keith', 'keith@example.com', '{noop}keithpw'),
-                                                              ('22222222-2222-2222-2222-222222222222', 'mary', 'mary@example.com', '{noop}marypw'),
-                                                              ('33333333-3333-3333-3333-333333333333', 'john', 'john@example.com', '{noop}johnpw');
+-- Insert Users (with UUIDs)
+INSERT INTO users (id, username, email, password, full_name, phone_number) VALUES
+                                                                               ('11111111-1111-1111-1111-111111111111', 'keith', 'keith@example.com', '{noop}keithpw', 'Keith Chan', '1234567890'),
+                                                                               ('22222222-2222-2222-2222-222222222222', 'mary', 'mary@example.com', '{noop}marypw', 'Mary Lee', '0987654321'),
+                                                                               ('33333333-3333-3333-3333-333333333333', 'john', 'john@example.com', '{noop}johnpw', 'John Smith', '1122334455');
 
 INSERT INTO user_roles(username, role) VALUES ('keith', 'ROLE_ADMIN');
 INSERT INTO user_roles(username, role) VALUES ('keith', 'ROLE_TEACHER');

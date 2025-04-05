@@ -23,4 +23,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     // Find all users with a specific role
     List<User> findDistinctByRolesRole(String role);
+
 }

@@ -10,9 +10,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class User {
-    public User() {
-
-    }
 
     @Id
     @GeneratedValue
@@ -28,24 +25,36 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "full_name", nullable = false)
+    private String fullName; // New field for the full name
+
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber; // New field for the phone number
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserRole> roles = new ArrayList<>(); // e.g., "TEACHER" or "STUDENT"
+    private List<UserRole> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments; // A user can write multiple comments
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes;
 
-    public User(String username, String password, String[] roles) {
+    public User() {}
+
+    public User(String username, String email, String password, String fullName, String phoneNumber, String[] roles) {
         this.username = username;
-        this.password = "{noop}" + password;
+        this.email = email;
+        this.password = "{noop}" + password; // No-op encoding for simplicity
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
 
         for (String role : roles) {
             this.roles.add(new UserRole(this, role));
         }
     }
+
     // Getters and setters
     public UUID getId() {
         return id;
@@ -79,6 +88,22 @@ public class User {
         this.password = password;
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public List<UserRole> getRoles() {
         return roles;
     }
@@ -86,6 +111,7 @@ public class User {
     public void setRoles(List<UserRole> roles) {
         this.roles = roles;
     }
+
     public List<Comment> getComments() {
         return comments;
     }
@@ -100,5 +126,5 @@ public class User {
 
     public void setVotes(List<Vote> votes) {
         this.votes = votes;
-    }
-}
+
+}}

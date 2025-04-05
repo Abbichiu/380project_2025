@@ -1,5 +1,4 @@
 package hkmu.wadd.config;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -38,16 +37,24 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
+                        // Allow access to /register for GET and POST requests
+                                .requestMatchers(HttpMethod.GET, "/register").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/register").permitAll()
 
+
+                        // Allow DELETE requests for teachers only
                         .requestMatchers(HttpMethod.DELETE, "/teacher/poll/**").hasRole("TEACHER")
+
                         // Restrict access to /teacher/** to users with ROLE_TEACHER
                         .requestMatchers("/teacher/**").hasRole("TEACHER")
 
                         // Allow access to /lecture/** to everyone (students and teachers)
                         .requestMatchers("/lecture/**").permitAll()
+
+                        // Require authentication for /poll/** endpoints
                         .requestMatchers("/poll/**").authenticated()
 
-                        // Existing configurations for /user/** and /ticket/** URLs
+                        // Role-based access for /user/** and /ticket/** URLs
                         .requestMatchers("/user/**").hasRole("ADMIN")
                         .requestMatchers("/ticket/delete/**").hasRole("ADMIN")
                         .requestMatchers("/ticket/**").hasAnyRole("USER", "ADMIN")
