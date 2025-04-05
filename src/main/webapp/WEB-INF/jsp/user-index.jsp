@@ -42,6 +42,16 @@
   <button type="submit">Logout</button>
 </form>
 
+<!-- Profile Link (Visible to All User Roles) -->
+<div class="section">
+  <h2>Your Profile</h2>
+  <ul>
+    <li>
+      <a href="<c:url value='/profile?id=${userId}' />">View and Update Profile</a>
+    </li>
+  </ul>
+</div>
+
 <!-- Display Teacher Link -->
 <security:authorize access="hasRole('ROLE_TEACHER')">
   <div class="section">

@@ -53,19 +53,29 @@ public class IndexController {
     @GetMapping("/index")
     @Transactional
     public String userIndex(Authentication authentication, Model model) {
+        // Get the currently logged-in user's username
         String username = authentication.getName();
 
+        // Retrieve the user object by username
+        User user = userService.getUserByUsername(username);
+
+        // Retrieve all courses, lectures, and polls
         List<Course> courses = courseService.getAllCourses();
         List<Lecture> lectures = lectureService.getAllLectures();
         List<Poll> polls = pollService.getAllPolls();
 
-        model.addAttribute("username", username);
+        // Add attributes to the model
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("userId", user.getId()); // Pass the userId to the model
         model.addAttribute("courses", courses);
         model.addAttribute("lectures", lectures);
         model.addAttribute("polls", polls);
 
+        // Return the user-index view
         return "user-index"; // Resolves to /WEB-INF/jsp/user-index.jsp
     }
+
+
 
     @GetMapping("/login")
     public String login() {

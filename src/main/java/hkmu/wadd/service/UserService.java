@@ -62,6 +62,10 @@ import java.util.stream.Collectors;
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
+    }
 
     public List<User> getAllAdmins() {
         // Use UserRoleRepository to fetch all "ROLE_ADMIN" entries

@@ -29,7 +29,15 @@
 </head>
 <body>
 <h1>User Management</h1>
+<!-- Back Button -->
+<a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
 
+<!-- Success Message -->
+<c:if test="${not empty successMessage}">
+  <div style="color: green; font-weight: bold; margin-bottom: 20px;">
+      ${successMessage}
+  </div>
+</c:if>
 <!-- Back Button -->
 <div class="back-button">
   <a href="<c:url value='/index' />" style="text-decoration: none; color: white; background-color: #007bff; padding: 10px 20px; border-radius: 5px;">
@@ -56,6 +64,7 @@
         <input type="hidden" name="id" value="${user.id}" />
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
         <td>${user.username}</td> <!-- Username is not editable -->
+        <td><input type="text" name="username" value="${user.username}" required /></td>
         <td><input type="text" name="fullName" value="${user.fullName}" required /></td>
         <td><input type="password" name="password" value="${user.password}" required /></td>
         <td><input type="email" name="email" value="${user.email}" required /></td>
@@ -111,6 +120,7 @@
         <input type="hidden" name="id" value="${admin.id}" />
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
         <td>${admin.username}</td> <!-- Username is not editable -->
+        <td><input type="text" name="username" value="${admin.username}" required /></td>
         <td><input type="text" name="fullName" value="${admin.fullName}" required /></td>
         <td><input type="email" name="email" value="${admin.email}" required /></td>
         <td><input type="text" name="phoneNumber" value="${admin.phoneNumber}" required /></td>
