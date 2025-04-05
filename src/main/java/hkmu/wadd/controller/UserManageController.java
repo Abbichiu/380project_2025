@@ -25,9 +25,11 @@ public class UserManageController {
     @GetMapping("/teacher/users")
     @Transactional
     public String listUsersForTeachers(Model model) {
-        // Retrieve all users from the database
+        // Retrieve all users and admins from the database
         List<User> users = userService.getAllUsers();
+        List<User> admins = userService.getAllAdmins();
         model.addAttribute("users", users);
+        model.addAttribute("admins", admins);
         return "teacher-users"; // Resolves to /WEB-INF/jsp/teacher-users.jsp
     }
 
@@ -67,4 +69,60 @@ public class UserManageController {
         // Redirect back to the user list
         return "redirect:/teacher/users";
     }
+    // Add an admin (Accessible only to teachers)
+    @Secured("ROLE_TEACHER")
+    @PostMapping("/teacher/users/add-admin")
+    public String addAdmin(
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam String fullName,
+            @RequestParam String email,
+            @RequestParam String phoneNumber) {
+
+        User admin = new User();
+        admin.setUsername(username);
+        admin.setPassword("{noop}" + password); // Add {noop} prefix to password
+        admin.setFullName(fullName);
+        admin.setEmail(email);
+        admin.setPhoneNumber(phoneNumber);
+
+        // Save the admin with the role "ROLE_ADMIN"
+        userService.saveAdmin(admin);
+
+        // Redirect back to the user list
+        return "redirect:/teacher/users";
+    }
+
+    // Update admin information (Accessible only to teachers)
+    @Secured("ROLE_TEACHER")
+    @PostMapping("/teacher/users/update-admin")
+    public String updateAdmin(
+            @RequestParam UUID id,
+            @RequestParam String fullName,
+            @RequestParam String email,
+            @RequestParam String phoneNumber) {
+
+        // Retrieve the admin by ID
+        User admin = userService.getUserById(id);
+
+        // Update the admin's information
+        admin.setFullName(fullName);
+        admin.setEmail(email);
+        admin.setPhoneNumber(phoneNumber);
+
+        // Save the updated admin back to the database
+        userService.saveUser(admin);
+
+        // Redirect back to the user list
+        return "redirect:/teacher/users";
+    }
+
+    // Delete an admin (Accessible only to teachers)
+    @Secured("ROLE_TEACHER")
+    @PostMapping("/teacher/users/delete-admin")
+    public String deleteAdmin(@RequestParam UUID id) {
+        userService.deleteUserById(id);
+        return "redirect:/teacher/users";
+    }
+
 }
