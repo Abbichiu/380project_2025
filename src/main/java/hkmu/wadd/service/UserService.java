@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-    public class UserService {
+public class UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -24,12 +24,22 @@ import java.util.stream.Collectors;
 
     @Transactional
     public void saveUser(User user) {
+        // Check if the username already exists
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new IllegalArgumentException("Username already exists: " + user.getUsername());
+        }
+
         // Save the user to generate a valid ID
         userRepository.save(user);
     }
 
     @Transactional
     public void saveAdmin(User admin) {
+        // Check if the username already exists
+        if (userRepository.existsByUsername(admin.getUsername())) {
+            throw new IllegalArgumentException("Username already exists: " + admin.getUsername());
+        }
+
         // Save the admin user
         userRepository.save(admin);
 
@@ -62,6 +72,7 @@ import java.util.stream.Collectors;
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
@@ -91,4 +102,3 @@ import java.util.stream.Collectors;
         userRepository.deleteById(id);
     }
 }
-

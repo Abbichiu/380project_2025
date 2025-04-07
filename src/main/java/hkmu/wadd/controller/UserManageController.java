@@ -79,30 +79,34 @@ public class UserManageController {
         return "redirect:/teacher/users";
     }
     // Add an admin (Accessible only to teachers)
-    @Secured("ROLE_TEACHER")
     @PostMapping("/teacher/users/add-admin")
     public String addAdmin(
             @RequestParam String username,
             @RequestParam String password,
             @RequestParam String fullName,
             @RequestParam String email,
-            @RequestParam String phoneNumber) {
+            @RequestParam String phoneNumber,
+            RedirectAttributes redirectAttributes) {
 
-        User admin = new User();
-        admin.setUsername(username);
-        admin.setPassword("{noop}" + password); // Add {noop} prefix to password
-        admin.setFullName(fullName);
-        admin.setEmail(email);
-        admin.setPhoneNumber(phoneNumber);
+        try {
+            User admin = new User();
+            admin.setUsername(username);
+            admin.setPassword("{noop}" + password); // Add {noop} prefix to password
+            admin.setFullName(fullName);
+            admin.setEmail(email);
+            admin.setPhoneNumber(phoneNumber);
 
-        // Save the admin with the role "ROLE_ADMIN"
-        userService.saveAdmin(admin);
+            // Save the admin with the role "ROLE_ADMIN"
+            userService.saveAdmin(admin);
 
+            redirectAttributes.addFlashAttribute("successMessage", "Admin added successfully!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
 
         // Redirect back to the user list
         return "redirect:/teacher/users";
     }
-
     // Update admin information (Accessible only to teachers)
     @Secured("ROLE_TEACHER")
     @PostMapping("/teacher/users/update-admin")
