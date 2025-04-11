@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS lecture (
                                        course_id BIGINT NOT NULL,
                                        FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE
 );
+ALTER TABLE lecture ALTER COLUMN id RESTART WITH 4;
 
 -- 4. Create the Lecture Notes table
 CREATE TABLE IF NOT EXISTS lecture_notes (
@@ -56,7 +57,7 @@ CREATE TABLE IF NOT EXISTS poll (
                                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
                                     question VARCHAR(255) NOT NULL
 );
-
+ALTER TABLE poll ALTER COLUMN id RESTART WITH 3;
 -- 8. Create the Poll Options table
 CREATE TABLE IF NOT EXISTS poll_options (
                                             poll_id BIGINT NOT NULL,
@@ -64,6 +65,7 @@ CREATE TABLE IF NOT EXISTS poll_options (
                                             PRIMARY KEY (poll_id, option_text),
                                             FOREIGN KEY (poll_id) REFERENCES poll(id) ON DELETE CASCADE
 );
+
 
 -- 9. Create the Comment table
 CREATE TABLE IF NOT EXISTS comment (

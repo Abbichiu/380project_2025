@@ -13,14 +13,14 @@ INSERT INTO user_roles(username, role) VALUES ('mary', 'ROLE_STUDENT');
 -- Insert Courses
 DELETE FROM course WHERE id IN (1, 2);
 INSERT INTO course (id, name) VALUES
-                                  (1, 'Computer Science 101');
+                                  (1, 'COMP S380F Web Applications: Design And Development');
 
 
 -- Insert Lectures
 INSERT INTO lecture (id, title, description, course_id) VALUES
-                                                            (1, 'Introduction to Programming', 'Learn the basics of programming.', 1),
-                                                            (2, 'Data Structures', 'Understand fundamental data structures.', 1),
-                                                            (3, 'Linear Algebra Basics', 'Introduction to linear algebra concepts.', 1);
+                                                            (1, 'Overview of Web Applications', 'Learn the web applications.', 1),
+                                                            (2, 'Servlet', 'Understand Web container-How to deploy Servlets.', 1),
+                                                            (3, 'JSP, JavaBean', 'Introduction to Lifecycle of a JSP page.', 1);
 
 -- Insert Lecture Notes
 INSERT INTO lecture_notes (lecture_id, note_url) VALUES

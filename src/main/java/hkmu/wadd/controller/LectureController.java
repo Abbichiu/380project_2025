@@ -1,11 +1,14 @@
 package hkmu.wadd.controller;
 
 import hkmu.wadd.model.Comment;
+import hkmu.wadd.model.Course;
 import hkmu.wadd.model.Lecture;
 import hkmu.wadd.service.CommentService;
+import hkmu.wadd.service.CourseService;
 import hkmu.wadd.service.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -33,6 +36,9 @@ public class LectureController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private CourseService courseService;
 
     // Fetch lecture for students
     @GetMapping("/lecture/{lectureId}")
@@ -170,6 +176,34 @@ public class LectureController {
     public String deleteComment(@PathVariable Long lectureId, @PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return "redirect:/teacher/lecture/" + lectureId; // Reload the page
+    }
+    @Secured("ROLE_TEACHER")
+    @PostMapping("/lecture/add")
+    public String addLecture(@RequestParam String title, @RequestParam String description, Model model) {
+        try {
+            Course course = courseService.getCourseById(1L);
+            if (course == null) {
+                throw new RuntimeException("Course with ID 1 not found.");
+            }
+
+            Lecture lecture = new Lecture();
+            lecture.setTitle(title);
+            lecture.setDescription(description);
+            lecture.setCourse(course);
+            lectureService.save(lecture);
+
+            return "redirect:/index";
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("error", "Failed to add lecture: Duplicate entry or database error.");
+            return "error"; // Forward to an error page
+        }
+    }
+
+    @Secured("ROLE_TEACHER")
+    @PostMapping("/lecture/delete/{id}")
+    public String deleteLecture(@PathVariable Long id) {
+        lectureService.deleteById(id);
+        return "redirect:/index";
     }
 
 }

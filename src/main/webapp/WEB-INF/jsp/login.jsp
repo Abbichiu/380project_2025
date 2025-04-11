@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Customer Support Login</title>
+  <title>User Login</title>
 </head>
 <body>
 <c:if test="${param.error != null}">
@@ -11,7 +11,7 @@
   <p style="color: green;">You have successfully logged out.</p>
 </c:if>
 
-<h2>Customer Support Login</h2>
+<h2>Login</h2>
 <form action="login" method="POST">
   <label for="username">Username:</label><br/>
   <input type="text" id="username" name="username" required/><br/><br/>

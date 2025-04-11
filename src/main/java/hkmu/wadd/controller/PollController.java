@@ -142,5 +142,25 @@ public class PollController {
 
         return "Poll-History"; // Render poll-history.jsp
     }
+    @Secured("ROLE_TEACHER")
+    @PostMapping("/add")
+    public String addPoll(@RequestParam String question, @RequestParam List<String> options) {
+        Poll poll = new Poll();
+        poll.setQuestion(question);
+        poll.setOptions(options); // Set options directly
+
+        // Save the poll and its options
+        pollService.save(poll);
+
+        // Redirect after saving
+        return "redirect:/index";
+    }
+
+    @Secured("ROLE_TEACHER")
+    @PostMapping("/delete/{id}")
+    public String deletePoll(@PathVariable Long id) {
+        pollService.deleteById(id);
+        return "redirect:/index";
+    }
 
 }

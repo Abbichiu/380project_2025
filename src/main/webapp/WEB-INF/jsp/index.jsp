@@ -33,7 +33,7 @@
   }
 </style>
 <body>
-<h1>Welcome to the Portal</h1>
+<h1>Welcome to the Online Course Website </h1>
 
 <div>
   <!-- Show login and register links for anonymous users -->

@@ -69,11 +69,17 @@ public class UserManageController {
     // Delete user (Accessible only to teachers)
     @Secured("ROLE_TEACHER")
     @PostMapping("/teacher/users/delete")
-    public String deleteUserByTeacher(@RequestParam UUID id,RedirectAttributes redirectAttributes) {
-        // Delete the user by ID
-        userService.deleteUserById(id);
-// Add success message to flash attributes
-        redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully!");
+    public String deleteUserByTeacher(@RequestParam UUID id, RedirectAttributes redirectAttributes) {
+        try {
+            // Delete the user by ID
+            userService.deleteUserById(id);
+
+            // Add success message
+            redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully!");
+        } catch (Exception e) {
+            // Handle errors gracefully
+            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while deleting the user: " + e.getMessage());
+        }
 
         // Redirect back to the user list
         return "redirect:/teacher/users";
@@ -168,20 +174,44 @@ public class UserManageController {
             @RequestParam String phoneNumber,
             RedirectAttributes redirectAttributes) {
 
-        // Retrieve the user by ID
-        User user = userService.getUserById(id);
+        try {
+            // Retrieve the user by ID
+            User user = userService.getUserById(id);
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "User not found.");
+                return "redirect:/profile?id=" + id;
+            }
 
-        // Update the user's information
-        user.setFullName(fullName);
-        user.setPassword("{noop}" + password); // Add {noop} prefix to password
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
+            // Check if the email already exists (exclude the current user)
+            if (!user.getEmail().equals(email) && userService.existsByEmail(email)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Email already exists: " + email);
+                return "redirect:/profile?id=" + id;
+            }
 
-        // Save the updated user back to the database
-        userService.saveUser(user);
+            // Update the user's information
+            user.setFullName(fullName);
 
-        // Add success message
-        redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
+            // Only update the password if it has been changed
+            if (password != null && !password.isEmpty()) {
+                // Check if the password already has the "{noop}" prefix
+                if (!password.startsWith("{noop}")) {
+                    password = "{noop}" + password;
+                }
+                user.setPassword(password);
+            }
+
+            user.setEmail(email);
+            user.setPhoneNumber(phoneNumber);
+
+            // Save the updated user back to the database
+            userService.saveUser(user);
+
+            // Add success message
+            redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
+        } catch (Exception e) {
+            // Handle unexpected errors
+            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while updating the profile: " + e.getMessage());
+        }
 
         // Redirect back to the profile page
         return "redirect:/profile?id=" + id;

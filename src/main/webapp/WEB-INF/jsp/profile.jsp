@@ -26,6 +26,11 @@
       font-weight: bold;
       margin-bottom: 20px;
     }
+    .alert.alert-danger {
+      color: red;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
     .update-button {
       background-color: #007bff;
       color: white;
@@ -41,16 +46,25 @@
 </head>
 <body>
 <h1>Profile</h1>
+
 <!-- Back Button -->
 <a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
 <form action="<c:url value='/logout' />" method="POST">
   <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
   <button type="submit">Logout</button>
 </form>
+
 <!-- Success Message -->
 <c:if test="${not empty successMessage}">
   <div class="success-message">
       ${successMessage}
+  </div>
+</c:if>
+
+<!-- Error Message -->
+<c:if test="${not empty errorMessage}">
+  <div class="alert alert-danger">
+      ${errorMessage}
   </div>
 </c:if>
 

@@ -33,6 +33,9 @@ public class PollService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+
+
     public List<Poll> getAllPolls() {
         List<Poll> polls = pollRepository.findAll();
 
@@ -139,5 +142,15 @@ public class PollService {
         votes.forEach(vote -> Hibernate.initialize(vote.getPoll()));
 
         return votes;
+    }
+    @Transactional
+
+    public void save(Poll poll) {
+        // The "options" are automatically saved due to the @ElementCollection mapping
+        pollRepository.save(poll);
+    }
+
+    public void deleteById(Long id) {
+        pollRepository.deleteById(id);
     }
 }

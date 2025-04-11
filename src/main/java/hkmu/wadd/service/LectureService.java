@@ -113,4 +113,11 @@ public class LectureService {
             throw new RuntimeException("Failed to delete file: " + e.getMessage(), e);
         }
     }
+    public void save(Lecture lecture) {
+        lectureRepository.save(lecture);
+    }
+
+    public void deleteById(Long id) {
+        lectureRepository.deleteById(id);
+    }
 }

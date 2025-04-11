@@ -15,10 +15,10 @@ import java.util.Collections;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 
 @SpringBootApplication(scanBasePackages = "hkmu.wadd")
-public class Lab10Application {
+public class S380project {
 
     public static void main(String[] args) {
-        SpringApplication.run(Lab10Application.class, args);
+        SpringApplication.run(S380project.class, args);
     }
 
     @Bean

@@ -23,16 +23,16 @@ public class UserService {
     private UserRoleRepository userRoleRepository;
 
     @Transactional
+
     public void saveUser(User user) {
-        // Check if the username already exists
-        if (userRepository.existsByUsername(user.getUsername())) {
+        // Check if the username already exists for a different user
+        if (userRepository.existsByUsernameAndIdNot(user.getUsername(), user.getId())) {
             throw new IllegalArgumentException("Username already exists: " + user.getUsername());
         }
 
-        // Save the user to generate a valid ID
+        // Proceed to save the user
         userRepository.save(user);
     }
-
     @Transactional
     public void saveAdmin(User admin) {
         // Check if the username already exists
@@ -93,12 +93,20 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUserById(UUID id) {
-        // Delete all roles associated with the user first
-        List<UserRole> userRoles = userRoleRepository.findByUserId(id);
-        userRoleRepository.deleteAll(userRoles);
 
-        // Then delete the user
-        userRepository.deleteById(id);
+    public void deleteUserById(UUID id) {
+        // Retrieve the user by ID
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Explicitly remove associated roles to avoid transient instance errors
+        user.getRoles().clear();
+
+        // Delete the user
+        userRepository.delete(user);
     }
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
 }

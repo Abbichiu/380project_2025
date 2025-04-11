@@ -1,9 +1,7 @@
 package hkmu.wadd.model;
 
 
-
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -13,7 +11,7 @@ public class Lecture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremented numeric ID
-    private Long id; // Use Long as the primary key type
+    private Long id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -21,21 +19,18 @@ public class Lecture {
     @Column(name = "description")
     private String description;
 
-    @ColumnDefault("0") // Default value for the course ID column
-    @Column(name = "course_id", insertable = false, updatable = false)
-    private Long courseId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id") // Defines the foreign key relationship
+    // Remove @Column and rely on @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY, optional = false) // Ensure the course is required
+    @JoinColumn(name = "course_id", nullable = false) // Foreign key to Course
     private Course course;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "lecture_notes", joinColumns = @JoinColumn(name = "lecture_id"))
     @Column(name = "note_url")
-    private List<String> noteLinks; // Stores the URLs for lecture notes
+    private List<String> noteLinks;
 
     @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments; // A list of comments related to this lecture
+    private List<Comment> comments;
 
     // Getters and Setters
     public Long getId() {
@@ -60,14 +55,6 @@ public class Lecture {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Long getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(Long courseId) {
-        this.courseId = courseId;
     }
 
     public Course getCourse() {
