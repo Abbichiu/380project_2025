@@ -6,63 +6,87 @@
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
+      background-color: #f4f4f4; /* Light grey background */
+      color: #333; /* Dark text color */
     }
     h1, h2 {
       color: #333;
+      text-align: center; /* Center headings */
     }
-    ul {
-      list-style-type: none;
-      padding: 0;
+    .back-button {
+      display: inline-block; /* Make the link a block element */
+      margin-bottom: 20px; /* Space below the link */
+      color: #007bff; /* Blue link color */
+      font-weight: bold; /* Bold text */
+      text-decoration: none; /* No underline */
+      text-align: center; /* Center the link */
     }
-    ul li {
-      margin-bottom: 10px;
-    }
-    a {
-      text-decoration: none;
-      color: #007bff;
-    }
-    a:hover {
-      text-decoration: underline;
+    .back-button:hover {
+      text-decoration: underline; /* Underline on hover */
     }
     .section {
-      margin-bottom: 30px;
+      margin-bottom: 30px; /* Space below each section */
+      background: white; /* White background for sections */
+      padding: 20px; /* Padding inside sections */
+      border-radius: 5px; /* Rounded corners */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+    ul {
+      list-style-type: none; /* Remove default list styling */
+      padding: 0; /* Remove padding */
+    }
+    ul li {
+      margin-bottom: 10px; /* Space between list items */
+      padding: 10px; /* Padding inside list items */
+      background: #f9f9f9; /* Light grey background for list items */
+      border-radius: 5px; /* Rounded corners */
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+    a {
+      text-decoration: none; /* No underline */
+      color: #007bff; /* Blue link color */
+    }
+    a:hover {
+      text-decoration: underline; /* Underline on hover */
     }
     .comment {
-      font-size: 0.9em;
-      background: #f9f9f9;
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 10px;
+      font-size: 0.9em; /* Slightly smaller font size for comments */
+      background: #f9f9f9; /* Light grey background for comments */
+      padding: 10px; /* Padding inside comments */
+      border-radius: 5px; /* Rounded corners */
+      margin-bottom: 10px; /* Space below comments */
     }
     .comment-form textarea {
-      width: 100%;
-      height: 80px;
-      margin-bottom: 10px;
-      padding: 10px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      width: 100%; /* Full width textarea */
+      height: 80px; /* Fixed height */
+      margin-bottom: 10px; /* Space below textarea */
+      padding: 10px; /* Padding inside textarea */
+      font-size: 1em; /* Font size */
+      border: 1px solid #ccc; /* Light grey border */
+      border-radius: 5px; /* Rounded corners */
+      box-sizing: border-box; /* Include padding in width */
     }
     .comment-form button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
+      background-color: #007bff; /* Blue button background */
+      color: white; /* White text */
+      border: none; /* No border */
+      padding: 10px 20px; /* Padding inside button */
+      border-radius: 5px; /* Rounded corners */
+      cursor: pointer; /* Pointer cursor on hover */
+      transition: background-color 0.3s; /* Smooth transition */
     }
     .comment-form button:hover {
-      background-color: #0056b3;
+      background-color: #0056b3; /* Darker blue on hover */
     }
     .delete-button {
-      color: red;
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-size: 0.9em;
+      color: red; /* Red text for delete button */
+      background: none; /* No background */
+      border: none; /* No border */
+      cursor: pointer; /* Pointer cursor */
+      font-size: 0.9em; /* Slightly smaller font size */
     }
     .delete-button:hover {
-      text-decoration: underline;
+      text-decoration: underline; /* Underline on hover */
     }
   </style>
 </head>
@@ -71,14 +95,10 @@
 
 <!-- Back Button -->
 <a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
-<form action="<c:url value='/logout' />" method="POST">
-  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-  <button type="submit">Logout</button>
-</form>
 
 <!-- Section: Upload Files -->
 <div class="section">
-  <h2>Upload Lecture Notes</h2>
+  <h2> Upload Lecture Notes</h2>
   <form action="${pageContext.request.contextPath}/teacher/lecture/${lecture.id}/upload-multiple" method="post" enctype="multipart/form-data">
     <input type="hidden" name="_csrf" value="${_csrf.token}" />
     <input type="file" name="files" multiple required> <!-- Multiple file input -->

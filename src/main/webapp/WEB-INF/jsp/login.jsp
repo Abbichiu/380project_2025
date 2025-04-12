@@ -121,7 +121,6 @@
 
   <p>If you don't have an account, <a href="<c:url value='/register' />">register here</a>.</p>
 
-  <!-- Back to Home link -->
   <div class="back-link">
     <a href="<c:url value='/' /> ">Back to Home</a>
   </div>

@@ -6,36 +6,57 @@
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
+      background-color: #f4f4f4; /* Light grey background */
+      color: #333; /* Dark text color */
     }
     h1, h2 {
       color: #333;
+      text-align: center; /* Center headings */
     }
     .error-message {
-      color: red;
-      font-weight: bold;
-      margin: 10px 0;
+      color: red; /* Red text for error messages */
+      font-weight: bold; /* Bold text */
+      margin: 10px 0; /* Space around error message */
+      text-align: center; /* Center the message */
+    }
+    .back-button {
+      display: inline-block; /* Make the link a block element */
+      margin-bottom: 20px; /* Space below the link */
+      color: #007bff; /* Blue link color */
+      font-weight: bold; /* Bold text */
+      text-align: center; /* Center the link */
+      text-decoration: none; /* No underline */
+    }
+    .back-button:hover {
+      text-decoration: underline; /* Underline on hover */
     }
     .poll-form {
       margin-top: 20px;
+      background: white; /* White background for the form */
+      padding: 20px; /* Padding inside the form */
+      border-radius: 5px; /* Rounded corners */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     }
     .poll-options {
-      list-style-type: none;
-      padding: 0;
+      list-style-type: none; /* Remove default list styling */
+      padding: 0; /* Remove padding */
     }
     .poll-options li {
-      margin-bottom: 10px;
+      margin-bottom: 10px; /* Space between options */
     }
     button {
-      margin-top: 10px;
-      padding: 10px 15px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      margin-top: 10px; /* Space above button */
+      padding: 10px 15px; /* Padding inside button */
+      background-color: #007bff; /* Blue button background */
+      color: #fff; /* White text */
+      border: none; /* No border */
+      border-radius: 4px; /* Rounded corners */
+      cursor: pointer; /* Pointer cursor on hover */
+      width: 100%; /* Full width button */
+      transition: background-color 0.3s; /* Smooth transition */
     }
     button:hover {
-      background-color: #0056b3;
+      background-color: #0056b3; /* Darker blue on hover */
     }
   </style>
 </head>
@@ -43,10 +64,7 @@
 <h1>Poll Details</h1>
 <!-- Back Button -->
 <a href="<c:url value='/index' />" class="back-button">Back to Dashboard</a>
-<form action="<c:url value='/logout' />" method="POST">
-  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-  <button type="submit">Logout</button>
-</form>
+
 <!-- Display error message if present -->
 <c:if test="${not empty error}">
   <div class="error-message">${error}</div>

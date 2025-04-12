@@ -16,8 +16,7 @@
     h1 {
       font-size: 2.5em; /* Larger font size */
       padding: 10px;
-      background-color: #007bff; /* Blue background */
-      color: #00FF00FF; /* lime text */
+      color: #005eff; /* blue text */
       border-radius: 5px; /* Rounded corners */
     }
 
